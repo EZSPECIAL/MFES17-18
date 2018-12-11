@@ -1,1 +1,3 @@
-# MFES17-18
+# MFESTA
+
+Distributed printing queue project in Overture for MFES @ FEUP
