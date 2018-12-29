@@ -1,0 +1,9 @@
+class Document
+instance variables
+  pages:int;
+  isA4:bool;
+  isA3:bool;
+  isBlack:bool;
+  isColor:bool;
+
+end Document

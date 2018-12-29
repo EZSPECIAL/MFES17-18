@@ -1,0 +1,20 @@
+class User
+instance variables
+  document:set of (Document);
+  balance:int;
+
+operations
+  public  deposit : int ==> ?
+  deposit(money) ==
+    is not yet specified;
+
+  public  withdraw : int ==> ?
+  withdraw(money) ==
+    is not yet specified;
+
+  public  checkBalance : ()  ==> int
+  checkBalance() ==
+    is not yet specified;
+
+
+end User
