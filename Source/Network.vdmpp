@@ -1,10 +1,32 @@
 class Network
 instance variables
-  printer:set of (Printer);
+  private printerList: set of (Printer) := {};
 
 operations
-  public printReport: () ==> ()
-  printReport() ==
-    is not yet specified;
+
+  -- Constructs a network using default parameters (empty set of printers)
+  public Network: () ==> Network
+ 		Network() == return self;
+
+  -- Constructs a network of printers using the specified printer list (printerList)
+  public Network: set of (Printer) ==> Network
+ 		Network(printers) == (
+ 		  printerList := printers;
+ 		  return self;
+ 		);
+
+  -- Add a printer to the network
+  public addPrinter: Printer ==> ()
+    addPrinter(printer) == printerList := printerList union {printer};
+
+  -- Prints the individual report of every printer in the network
+  public printIndividualReport: () ==> ()
+  printIndividualReport() == (
+    for all printer in set printerList do printer.printReport();
+  );
+  
+  -- TODO sum system reports
+  public printSystemReport: () ==> ()
+    printSystemReport() == is not yet specified;
 
 end Network
