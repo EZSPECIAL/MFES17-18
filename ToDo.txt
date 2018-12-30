@@ -1,5 +1,3 @@
-individual report sum functions
-individual report check for N/A
 global report (number of prints / money received)
 remove hardcoded add operations in printIndividualReport
 

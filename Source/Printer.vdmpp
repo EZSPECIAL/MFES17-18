@@ -28,34 +28,27 @@ operations
  		);
 
   -- TODO
-  public print : Document * User ==> ?
-  print(document, user) ==
-    is not yet specified;
+  public print: Document * User ==> ?
+  print(document, user) == is not yet specified;
 
   -- TODO
-  public printingCost : Document ==> ?
-  printingCost(document) ==
-    is not yet specified;
+  public printingCost: Document ==> ?
+  printingCost(document) == is not yet specified;
 
   -- TODO
-  public break : ()  ==> ?
-  break() ==
-    is not yet specified;
+  public break: ()  ==> ?
+  break() == is not yet specified;
 
   -- TODO
-  public fix : ()  ==> ?
-  fix() ==
-    is not yet specified;
+  public fix: ()  ==> ?
+  fix() == is not yet specified;
 
   -- TODO remove hardcoded add operations
-  -- TODO move sums to function
   -- Prints an individual report of the printer, contains number of pages printed per format and toner as well as money received from each combination of those
   public printIndividualReport: ()  ==> ()
     printIndividualReport() == (
       printerReport.addBlackA4(20);
       printerReport.addColorA4(15);
-      printerReport.addBlackA3(10);
-      printerReport.addColorA3(15);
       
       -- Header
       IO`print("Name: ");
@@ -64,46 +57,70 @@ operations
       
       -- Pages printed
       IO`print("Number of A4 Black pages printed: ");
-      IO`print(printerReport.getBlackA4Printed());
+      if printerCapabilities.getCanPrintA4() and printerCapabilities.getCanPrintBlack()
+      then IO`print(printerReport.getBlackA4Printed())
+      else IO`print("N/A");
       IO`print("\n");
       IO`print("Number of A4 Color pages printed: ");
-      IO`print(printerReport.getColorA4Printed());
+      if printerCapabilities.getCanPrintA4() and printerCapabilities.getCanPrintColor()
+      then IO`print(printerReport.getColorA4Printed())
+      else IO`print("N/A");
       IO`print("\n");
       IO`print("Number of A3 Black pages printed: ");
-      IO`print(printerReport.getBlackA3Printed());
+      if printerCapabilities.getCanPrintA3() and printerCapabilities.getCanPrintBlack()
+      then IO`print(printerReport.getBlackA3Printed())
+      else IO`print("N/A");
       IO`print("\n");
       IO`print("Number of A3 Color pages printed: ");
-      IO`print(printerReport.getColorA3Printed());
+      if printerCapabilities.getCanPrintA3() and printerCapabilities.getCanPrintColor()
+      then IO`print(printerReport.getColorA3Printed())
+      else IO`print("N/A");
       IO`print("\n");
       IO`print("Total pages printed: ");
-      IO`print(printerReport.getBlackA4Printed() +
-               printerReport.getColorA4Printed() +
-               printerReport.getBlackA3Printed() +
-               printerReport.getColorA3Printed());
+      IO`print(sumTotalPagesPrinted());
       IO`print("\n");
       
       -- Money received
       IO`print("Money from printing A4 Black: ");
-      IO`print(printerPricing.getPriceA4Black() * printerReport.getBlackA4Printed());
+      if printerCapabilities.getCanPrintA4() and printerCapabilities.getCanPrintBlack()
+      then IO`print(printerPricing.getPriceA4Black() * printerReport.getBlackA4Printed())
+      else IO`print("N/A");
       IO`print("\n");
       IO`print("Money from printing A4 Color: ");
-      IO`print(printerPricing.getPriceA4Color() * printerReport.getColorA4Printed());
+      if printerCapabilities.getCanPrintA4() and printerCapabilities.getCanPrintColor()
+      then IO`print(printerPricing.getPriceA4Color() * printerReport.getColorA4Printed())
+      else IO`print("N/A");
       IO`print("\n");
       IO`print("Money from printing A3 Black: ");
-      IO`print(printerPricing.getPriceA3Black() * printerReport.getBlackA3Printed());
+      if printerCapabilities.getCanPrintA3() and printerCapabilities.getCanPrintBlack()
+      then IO`print(printerPricing.getPriceA3Black() * printerReport.getBlackA3Printed())
+      else IO`print("N/A");
       IO`print("\n");
       IO`print("Money from printing A3 Color: ");
-      IO`print(printerPricing.getPriceA3Color() * printerReport.getColorA3Printed());
+      if printerCapabilities.getCanPrintA3() and printerCapabilities.getCanPrintColor()
+      then IO`print(printerPricing.getPriceA3Color() * printerReport.getColorA3Printed())
+      else IO`print("N/A");
       IO`print("\n");
       IO`print("Total money: ");
-      IO`print(printerPricing.getPriceA4Black() * printerReport.getBlackA4Printed() +
-               printerPricing.getPriceA4Color() * printerReport.getColorA4Printed() +
-               printerPricing.getPriceA3Black() * printerReport.getBlackA3Printed() +
-               printerPricing.getPriceA3Color() * printerReport.getColorA3Printed());
+      IO`print(sumTotalMoneyReceived());
       IO`print("\n");
       IO`print("\n");
     );
-    
+
+  -- Returns the sum of the total pages printed at this printer
+  private sumTotalPagesPrinted: () ==> nat
+    sumTotalPagesPrinted() == return printerReport.getBlackA4Printed() +
+                                     printerReport.getColorA4Printed() +
+                                     printerReport.getBlackA3Printed() +
+                                     printerReport.getColorA3Printed();
+
+  -- Returns the total money received from all printings at this printer
+  private sumTotalMoneyReceived: () ==> real
+    sumTotalMoneyReceived() == return printerPricing.getPriceA4Black() * printerReport.getBlackA4Printed() +
+                                      printerPricing.getPriceA4Color() * printerReport.getColorA4Printed() +
+                                      printerPricing.getPriceA3Black() * printerReport.getBlackA3Printed() +
+                                      printerPricing.getPriceA3Color() * printerReport.getColorA3Printed();
+
 -- GETTERS
   -- Returns the printer name
   pure public getPrinterName: () ==> seq of (char)

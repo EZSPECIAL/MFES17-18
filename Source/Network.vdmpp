@@ -28,8 +28,8 @@ operations
     for all printer in set printerList do printer.printIndividualReport();
   );
   
-  -- TODO sum system reports
-  public printSystemReport: () ==> ()
-    printSystemReport() == is not yet specified;
+  -- TODO
+  public printGlobalReport: () ==> ()
+    printGlobalReport() == is not yet specified;
 
 end Network
