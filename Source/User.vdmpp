@@ -1,20 +1,42 @@
 class User
 instance variables
-  document:set of (Document);
-  balance:int;
+  private documentList: set of (Document) := {};
+  private balance: real;
+
+  inv balance >= 0;
 
 operations
-  public  deposit : int ==> ?
-  deposit(money) ==
-    is not yet specified;
+  -- Constructs a user with the specified parameters (balance)
+  -- Balance must be greater than 0
+  public User: real ==> User
+    User(initBal) == (
+      balance := initBal;
+      return self;
+    );
 
-  public  withdraw : int ==> ?
-  withdraw(money) ==
-    is not yet specified;
+  -- Adds the specified document to the user's document list
+  public addDocument: Document ==> ()
+    addDocument(doc) == documentList := documentList union {doc};
 
-  public  checkBalance : ()  ==> int
-  checkBalance() ==
-    is not yet specified;
+  -- Removes specified document from user's document list
+  public removeDocument: Document ==> ()
+    removeDocument(doc) == documentList := documentList \ {doc};
 
+  -- Credits the user account with the specified amount
+  public deposit: real ==> ()
+    deposit(amount) == balance := balance + amount;
+
+  -- Debits the user account with the specified amount
+  public withdraw: real ==> ()
+    withdraw(amount) == balance := balance - amount;
+
+-- GETTERS
+  -- Returns the user's balance
+  public getBalance: () ==> real
+    getBalance() == return self.balance;
+
+  -- Returns the user's document list
+  public getDocumentList: () ==> set of (Document)
+    getDocumentList() == return self.documentList;
 
 end User

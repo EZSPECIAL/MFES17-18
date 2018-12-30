@@ -1,9 +1,10 @@
-users can print from own queue
-user can add/remove documents to/from their queue
-users have balances
 user deposit / withdraw
+reports per printer (number of prints / money received)
+global report (number of prints / money received)
+
+user can print from their own document list
+printing subtracts balance from user
 printer malfunction (break / fix)
-reports per printer / system-wide (number of prints / money received)
 
 TESTS
   PrinterStatus

@@ -11,6 +11,11 @@ instance variables
   private printerReport: PrinterReport := new PrinterReport();
 
 operations
+  -- Constructs a printer object with the specified parameters (printerCapabilities, printerPricing, printerCapacities, printerStatus)
+  -- printerCapabilities defines the page format and toner the printer has available
+  -- printerPricing defines the price of printing each format using each toner option
+  -- printerCapacities defines the max capacity of each paper format and toner along with the current capacities
+  -- printerStatus defines the state of the printer (broken, operational, needing refill, etc)
   public Printer: PrinterCapability * PrinterPricing * PrinterCapacity * PrinterStatus ==> Printer
     Printer(capabilities, pricing, capacities, status) == (
       printerCapabilities := capabilities;
@@ -20,25 +25,30 @@ operations
  		  return self;
  		);
 
+  -- TODO
   public print : Document * User ==> ?
   print(document, user) ==
     is not yet specified;
 
+  -- TODO
   public printingCost : Document ==> ?
   printingCost(document) ==
     is not yet specified;
 
+  -- TODO
   public break : ()  ==> ?
   break() ==
     is not yet specified;
 
+  -- TODO
   public fix : ()  ==> ?
   fix() ==
     is not yet specified;
 
+  -- TODO
   -- prints * pricing = money received for each print type
-  public printReport: ()  ==> ()
-    printReport() == (
+  public printIndividualReport: ()  ==> ()
+    printIndividualReport() == (
       IO`print("hello");
     );
 

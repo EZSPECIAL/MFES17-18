@@ -22,7 +22,7 @@ operations
   -- Prints the individual report of every printer in the network
   public printIndividualReport: () ==> ()
   printIndividualReport() == (
-    for all printer in set printerList do printer.printReport();
+    for all printer in set printerList do printer.printIndividualReport();
   );
   
   -- TODO sum system reports
