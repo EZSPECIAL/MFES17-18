@@ -1,2 +1,21 @@
-default Printer
-create p := new Printer(true, true, true, true, 1, 2, 3, 4)
+-- Normal execution
+create pp := new PrinterPricing(0.03, 0.14, 0.06, 0.24)
+create pCapability := new PrinterCapability(true, false, true, true)
+create pCapacity := new PrinterCapacity(1, 2, 3, 4)
+create p := new Printer( BLALALAL
+create d := new Document(40, '4', 'B')
+
+-- Fail documents
+create d := new Document(20, '2', 'B')
+create d := new Document(30, '3', 'D')
+
+-- Fail capabilities
+create pc := new PrinterCapability(false, false, false,false)
+create pc1 := new PrinterCapability(false, false, true,true)
+create pc2 := new PrinterCapability(true, false, false,false)
+
+-- Fail capacities
+create pCapacity1 := new PrinterCapacity(-1, 2, 3, 4)
+create pCapacity2 := new PrinterCapacity(1, -2, 3, 4)
+create pCapacity3 := new PrinterCapacity(1, 2, -3, 4)
+create pCapacity3 := new PrinterCapacity(1, 2, 3, -4)

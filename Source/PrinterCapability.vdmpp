@@ -1,0 +1,38 @@
+class PrinterCapability
+instance variables
+  private canPrintA4: bool;
+  private canPrintA3: bool;
+  private canPrintBlack: bool;
+  private canPrintColor: bool;
+
+  inv canPrintA4 = true or canPrintA3 = true;
+  inv canPrintBlack = true or canPrintColor = true;
+
+operations
+  -- Constructs a printer capability object that specifies the page format and toners available for printing (canPrintA4, canPrintA3, canPrintBlack, canPrintColor)
+  public PrinterCapability: bool * bool * bool * bool ==> PrinterCapability
+ 		PrinterCapability(printA4, printA3, printBlack, printColor) == (
+ 		  canPrintA4 := printA4;
+ 		  canPrintA3 := printA3;
+ 		  canPrintBlack := printBlack;
+ 		  canPrintColor := printColor;
+ 		  return self;
+ 		);
+
+ 	-- Returns whether the printer can print in A4
+  public getCanPrintA4: () ==> bool
+    getCanPrintA4() == return self.canPrintA4;
+
+  -- Returns whether the printer can print in A3
+  public getCanPrintA3: () ==> bool
+    getCanPrintA3() == return self.canPrintA3;
+
+  -- Returns whether the printer can print in black
+  public getCanPrintBlack: () ==> bool
+    getCanPrintBlack() == return self.canPrintBlack;
+
+  -- Returns whether the printer can print in color
+  public getCanPrintColor: () ==> bool
+    getCanPrintColor() == return self.canPrintColor;
+
+end PrinterCapability

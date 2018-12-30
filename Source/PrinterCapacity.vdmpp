@@ -1,0 +1,83 @@
+class PrinterCapacity
+instance variables
+  private numOfSheetsA4: nat;
+  private numOfSheetsA3: nat;
+  private blackPrintsLeft: nat;
+  private colorPrintsLeft: nat;
+  private maxCapacityA4: nat;
+  private maxCapacityA3: nat;
+  private maxCapacityBlack: nat;
+  private maxCapacityColor: nat;
+
+  inv numOfSheetsA4 <= maxCapacityA4;
+  inv numOfSheetsA3 <= maxCapacityA3;
+  inv blackPrintsLeft <= maxCapacityBlack;
+  inv colorPrintsLeft <= maxCapacityColor;
+
+operations
+  -- Constructs a printer capacity object that specifies the max capacity of blank pages and toner cartridges (maxCapacityA4, maxCapacityA3, maxCapacityBlack, maxCapacityColor)
+  -- Capacity begins at max
+  public PrinterCapacity: nat * nat * nat * nat ==> PrinterCapacity
+ 		PrinterCapacity(numA4, numA3, maxBlack, maxColor) == (
+ 		  maxCapacityA4 := numA4;
+ 		  maxCapacityA3 := numA3;
+ 		  maxCapacityBlack := maxBlack;
+ 		  maxCapacityColor := maxColor;
+ 		  numOfSheetsA4 := numA4;
+ 		  numOfSheetsA3 := numA3;
+ 		  blackPrintsLeft := maxBlack;
+ 		  colorPrintsLeft := maxColor;
+ 		  return self;
+ 		);
+
+-- GETTERS
+ 	-- Returns the max capacity of A4 pages
+  public getMaxCapacityA4: () ==> nat
+    getMaxCapacityA4() == return self.maxCapacityA4;
+
+  -- Returns the max capacity of A3 pages
+  public getMaxCapacityA3: () ==> nat
+    getMaxCapacityA3() == return self.maxCapacityA3;
+
+  -- Returns the max capacity of the black toner
+  public getMaxCapacityBlack: () ==> nat
+    getMaxCapacityBlack() == return self.maxCapacityBlack;
+
+  -- Returns the max capacity of the color toners
+  public getMaxCapacityColor: () ==> nat
+    getMaxCapacityColor() == return self.maxCapacityColor;
+
+ 	-- Returns the number of A4 pages left in the tray
+  public getNumOfSheetsA4: () ==> nat
+    getNumOfSheetsA4() == return self.numOfSheetsA4;
+
+  -- Returns the number of A3 pages left in the tray
+  public getNumOfSheetsA3: () ==> nat
+    getNumOfSheetsA3() == return self.numOfSheetsA3;
+
+  -- Returns the number of black prints left
+  public getBlackPrintsLeft: () ==> nat
+    getBlackPrintsLeft() == return self.blackPrintsLeft;
+
+  -- Returns the number of color prints left
+  public getColorPrintsLeft: () ==> nat
+    getColorPrintsLeft() == return self.colorPrintsLeft;
+
+-- SETTERS
+  -- Set the number of A4 sheets left in the tray
+  public setNumOfSheetsA4: nat ==> ()
+    setNumOfSheetsA4(numA4) == numOfSheetsA4 := numA4;
+
+  -- Set the number of A3 sheets left in the tray
+  public setNumOfSheetsA3: nat ==> ()
+    setNumOfSheetsA3(numA3) == numOfSheetsA3 := numA3;
+
+  -- Set the number of black toner left
+  public setBlackPrintsLeft: nat ==> ()
+    setBlackPrintsLeft(numBlacks) == blackPrintsLeft := numBlacks;
+
+  -- Set the number of color toner left
+  public setColorPrintsLeft: nat ==> ()
+    setColorPrintsLeft(numColor) == colorPrintsLeft := numColor;
+
+end PrinterCapacity

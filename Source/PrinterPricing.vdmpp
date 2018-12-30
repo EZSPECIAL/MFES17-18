@@ -1,0 +1,41 @@
+class PrinterPricing
+instance variables
+  private priceA4Black: real;
+  private priceA4Color: real;
+  private priceA3Black: real;
+  private priceA3Color: real;
+
+	inv priceA4Black > 0;
+	inv priceA4Color > 0;
+	inv priceA3Black > 0;
+	inv priceA3Color > 0;
+
+operations
+  -- Constructs a printer pricing object that specifies the cost of printing all available formats (priceA4Black, priceA4Color, priceA3Black, priceA3Color)
+  -- All prices must be real numbers greater than 0
+  public PrinterPricing: real * real * real * real ==> PrinterPricing
+ 		PrinterPricing(priceA4B, priceA4C, priceA3B, priceA3C) == (
+ 		  priceA4Black := priceA4B;
+ 		  priceA4Color := priceA4C;
+ 		  priceA3Black := priceA3B;
+ 		  priceA3Color := priceA3C;
+ 		  return self;
+ 		);
+
+ 	-- Returns the page price of printing A4 in black
+  public getPriceA4Black: () ==> real
+    getPriceA4Black() == return self.priceA4Black;
+
+  -- Returns the page price of printing A4 in color
+  public getPriceA4Color: () ==> real
+    getPriceA4Color() == return self.priceA4Color;
+
+  -- Returns the page price of printing A3 in black
+  public getPriceA3Black: () ==> real
+    getPriceA3Black() == return self.priceA3Black;
+
+  -- Returns the page price of printing A3 in color
+  public getPriceA3Color: () ==> real
+    getPriceA3Color() == return self.priceA3Color;
+
+end PrinterPricing

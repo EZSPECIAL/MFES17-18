@@ -1,9 +1,34 @@
 class Document
 instance variables
-  pages:int;
-  isA4:bool;
-  isA3:bool;
-  isBlack:bool;
-  isColor:bool;
+  pages: nat;
+  pageFormat: char;
+  pageToner: char;
+  
+  inv pageFormat = '3' or pageFormat = '4';
+  inv pageToner = 'B' or pageToner = 'C';
 
+operations
+  -- Constructs a document with specified parameters (numPages, pageFormat, pageToner)
+  -- pageFormat must be '3' or '4'
+  -- pageToner must be 'B' or 'C'
+  public Document: nat * char * char ==> Document
+ 		Document(pgs, format, toner) == (
+ 		  pages := pgs;
+ 		  pageFormat := format;
+ 		  pageToner := toner;
+ 		  return self;
+ 		);
+ 		
+  -- Returns number of pages of the document
+  public getPages: () ==> nat
+    getPages() == return self.pages;
+    
+  -- Returns the page format (A3 or A4)
+  public getPageFormat: () ==> char
+    getPageFormat() == return self.pageFormat;
+    
+  -- Returns the page toner (Black or Color)
+  public getPageToner: () ==> char
+    getPageToner() == return self.pageToner;
+    
 end Document
