@@ -108,14 +108,14 @@ operations
     );
 
   -- Returns the sum of the total pages printed at this printer
-  private sumTotalPagesPrinted: () ==> nat
+  public sumTotalPagesPrinted: () ==> nat
     sumTotalPagesPrinted() == return printerReport.getBlackA4Printed() +
                                      printerReport.getColorA4Printed() +
                                      printerReport.getBlackA3Printed() +
                                      printerReport.getColorA3Printed();
 
   -- Returns the total money received from all printings at this printer
-  private sumTotalMoneyReceived: () ==> real
+  public sumTotalMoneyReceived: () ==> real
     sumTotalMoneyReceived() == return printerPricing.getPriceA4Black() * printerReport.getBlackA4Printed() +
                                       printerPricing.getPriceA4Color() * printerReport.getColorA4Printed() +
                                       printerPricing.getPriceA3Black() * printerReport.getBlackA3Printed() +

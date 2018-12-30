@@ -30,6 +30,33 @@ operations
   
   -- TODO
   public printGlobalReport: () ==> ()
-    printGlobalReport() == is not yet specified;
+    printGlobalReport() == (
+      dcl sumPages: nat := 0;
+      dcl sumMoney: real := 0;
+      
+      -- Sum the total pages printed and money received of all network printers
+      for all printer in set printerList do (
+        dcl pageCount: nat := printer.sumTotalPagesPrinted();
+        dcl moneyCount: real := printer.sumTotalMoneyReceived();
+        sumPages := sumPages + pageCount;
+        sumMoney := sumMoney + moneyCount;
+      );
+      
+      -- Header
+      IO`print("Printers in network: ");
+      IO`print(card self.printerList);
+      IO`print("\n");
+      
+      -- Pages printed
+      IO`print("Total pages printed: ");
+      IO`print(sumPages);
+      IO`print("\n");
+      
+      -- Money received
+      IO`print("Total money: ");
+      IO`print(sumMoney);
+      IO`print("\n");
+      IO`print("\n");
+    );
 
 end Network

@@ -10,6 +10,7 @@ create p2 := new Printer("p2", pCapability, pPricing2, pCapacity, pStatus)
 print network.addPrinter(p1)
 print network.addPrinter(p2)
 print network.printIndividualReport()
+print network.printGlobalReport()
 
 -- Test printer report
 create pPricing := new PrinterPricing(0.03, 0.14, 0.06, 0.24)

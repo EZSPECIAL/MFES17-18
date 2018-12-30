@@ -1,4 +1,7 @@
-global report (number of prints / money received)
+global report
+  - individual page prints
+  - individual money received
+  - number of printers that print each format?
 remove hardcoded add operations in printIndividualReport
 
 user can print from their own document list
