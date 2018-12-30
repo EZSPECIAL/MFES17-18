@@ -3,7 +3,7 @@ user can add/remove documents to/from their queue
 users have balances
 user deposit / withdraw
 printer malfunction (break / fix)
-reports per printer / system-wide (number of prints / paper levels / toner levels)
+reports per printer / system-wide (number of prints / money received)
 
 TESTS
   PrinterStatus

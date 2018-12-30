@@ -3,9 +3,8 @@ instance variables
   printer:set of (Printer);
 
 operations
-  public  printReport : ()  ==> ?
+  public printReport: () ==> ()
   printReport() ==
     is not yet specified;
-
 
 end Network

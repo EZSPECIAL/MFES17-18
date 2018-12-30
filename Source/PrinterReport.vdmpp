@@ -1,0 +1,46 @@
+class PrinterReport
+instance variables
+  private blackA4Printed: nat := 0;
+  private colorA4Printed: nat := 0;
+  private blackA3Printed: nat := 0;
+  private colorA3Printed: nat := 0;
+
+operations
+  -- Constructs a printer report with default parameters (0 of all types printed)
+  public PrinterReport: () ==> PrinterReport
+    PrinterReport() == return self;
+
+  -- Adds the specified number of pages to the total A4 black pages printed
+  public addBlackA4: nat ==> ()
+    addBlackA4(pages) == blackA4Printed := blackA4Printed + pages;
+
+  -- Adds the specified number of pages to the total A4 color pages printed
+  public addColorA4: nat ==> ()
+    addColorA4(pages) == colorA4Printed := colorA4Printed + pages;
+
+  -- Adds the specified number of pages to the total A3 black pages printed
+  public addBlackA3: nat ==> ()
+    addBlackA3(pages) == blackA3Printed := blackA3Printed + pages;
+
+  -- Adds the specified number of pages to the total A3 color pages printed
+  public addColorA3: nat ==> ()
+    addColorA3(pages) == colorA3Printed := colorA3Printed + pages;
+
+-- GETTERS
+ 	-- Returns the number of A4 black pages printed
+  public getBlackA4Printed: () ==> nat
+    getBlackA4Printed() == return self.blackA4Printed;
+
+  -- Returns the number of A4 color pages printed
+  public getColorA4Printed: () ==> nat
+    getColorA4Printed() == return self.colorA4Printed;
+
+  -- Returns the number of A3 black pages printed
+  public getBlackA3Printed: () ==> nat
+    getBlackA3Printed() == return self.blackA3Printed;
+
+  -- Returns the number of A3 color pages printed
+  public getColorA3Printed: () ==> nat
+    getColorA3Printed() == return self.colorA3Printed;
+
+end PrinterReport

@@ -3,7 +3,7 @@ create pPricing := new PrinterPricing(0.03, 0.14, 0.06, 0.24)
 create pCapability := new PrinterCapability(true, false, true, true)
 create pCapacity := new PrinterCapacity(1, 2, 3, 4)
 create pStatus := new PrinterStatus()
-create p := new Printer( BLALALAL
+create p := new Printer(pCapability, pPricing, pCapacity, pStatus)
 create d := new Document(40, '4', 'B')
 
 -- Fail documents

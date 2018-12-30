@@ -41,6 +41,16 @@ operations
     )
     pre stat in set status;
 
+  -- Flips "operational" to "needFixing" and vice-versa, as to not break the invariants specified
+  public flipOperationalStatus: () ==> ()
+    flipOperationalStatus() == (
+      dcl newStatus: set of (seq of (char)) := status;
+      if "operational" in set status
+      then newStatus := newStatus \ {"operational"} union {"needFixing"}
+      else newStatus := newStatus \ {"needFixing"} union {"operational"};
+      status := newStatus;
+    );
+
 -- GETTERS
   -- Returns the printer status set
   public getStatus: () ==> set of (seq of (char))
