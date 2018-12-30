@@ -1,6 +1,7 @@
-user deposit / withdraw
-reports per printer (number of prints / money received)
+individual report sum functions
+individual report check for N/A
 global report (number of prints / money received)
+remove hardcoded add operations in printIndividualReport
 
 user can print from their own document list
 printing subtracts balance from user

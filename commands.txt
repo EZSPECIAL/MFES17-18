@@ -1,15 +1,25 @@
--- Normal execution
+-- Test printer and network reports
 create network := new Network()
+create pPricing1 := new PrinterPricing(0.03, 0.14, 0.06, 0.24)
+create pPricing2 := new PrinterPricing(0.05, 0.16, 0.08, 0.26)
+create pCapability := new PrinterCapability(true, false, true, true)
+create pCapacity := new PrinterCapacity(1, 2, 3, 4)
+create pStatus := new PrinterStatus()
+create p1 := new Printer("p1", pCapability, pPricing1, pCapacity, pStatus)
+create p2 := new Printer("p2", pCapability, pPricing2, pCapacity, pStatus)
+print network.addPrinter(p1)
+print network.addPrinter(p2)
+print network.printIndividualReport()
+
+-- Test printer report
 create pPricing := new PrinterPricing(0.03, 0.14, 0.06, 0.24)
 create pCapability := new PrinterCapability(true, false, true, true)
 create pCapacity := new PrinterCapacity(1, 2, 3, 4)
 create pStatus := new PrinterStatus()
-create p1 := new Printer(pCapability, pPricing, pCapacity, pStatus)
-create p2 := new Printer(pCapability, pPricing, pCapacity, pStatus)
-print network.addPrinter(p1)
-print network.addPrinter(p2)
-print network.printInvididualReport()
+create p := new Printer("megaPrint", pCapability, pPricing, pCapacity, pStatus)
+print p.printIndividualReport()
 
+-- Test user
 create u := new User(20.0)
 create d1 := new Document(40, '4', 'B')
 create d2 := new Document(25, '3', 'C')
