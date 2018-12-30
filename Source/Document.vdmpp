@@ -18,7 +18,8 @@ operations
  		  pageToner := toner;
  		  return self;
  		);
- 		
+
+-- GETTERS
   -- Returns number of pages of the document
   public getPages: () ==> nat
     getPages() == return self.pages;

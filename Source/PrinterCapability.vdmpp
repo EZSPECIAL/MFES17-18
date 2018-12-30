@@ -19,6 +19,7 @@ operations
  		  return self;
  		);
 
+-- GETTERS
  	-- Returns whether the printer can print in A4
   public getCanPrintA4: () ==> bool
     getCanPrintA4() == return self.canPrintA4;

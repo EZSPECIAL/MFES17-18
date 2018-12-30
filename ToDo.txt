@@ -1,10 +1,12 @@
-4 queues
-printer characteristics (type of docs allowed / location / paper available A3-A4 / Toners / ???)
-printer state (working / malfunction / ???)
-users submit doc to queue
-users request printing of submitted docs
+users can print from own queue
+user can add/remove documents to/from their queue
 users have balances
 user deposit / withdraw
-printer malfunction (deterministic / non deterministic)
-send worker to fix printer function
+printer malfunction (break / fix)
 reports per printer / system-wide (number of prints / paper levels / toner levels)
+
+TESTS
+  PrinterStatus
+    - test all invariants
+    - test addStatus not in available status
+    - test removeStatus not in current status

@@ -1,0 +1,49 @@
+class PrinterStatus
+instance variables
+  private statusT: set of (seq of (char)) := {"needA4", "needA3", "needBlackToner", "needColorToner", "needFixing", "operational"};
+  private status: set of (seq of (char)) := {"operational"};
+
+  -- no broken/fixed printer at the same time
+  inv not(exists s1 in set status & s1 = "operational" and
+          exists s2 in set status & s2 = "needFixing");
+  -- all status must be taken from the available ones
+  inv forall s in set status & s in set statusT;
+  -- printer must have at least one status
+  inv card status > 0;
+  -- printer has to have at least "operational" or "needFixing" status
+  inv exists s1 in set status & s1 = "operational" or
+      exists s2 in set status & s2 = "needFixing";
+
+operations
+
+  -- Constructs a printer status object with default parameters ("operational")
+  public PrinterStatus: () ==> PrinterStatus
+ 		PrinterStatus() == return self;
+
+  -- Constructs a printer status object with specific parameters (status)
+  -- Must have "operational" or "needFixing", but not both
+  -- Must use the values of statusT instance variable
+  -- e.g. {"needA4", "operational"}
+  public PrinterStatus: set of (seq of (char)) ==> PrinterStatus
+ 		PrinterStatus(statusSet) == (
+ 		  status := statusSet;
+ 		  return self;
+ 		);
+
+  -- Adds a status to the printer (status must be from the available status)
+  public addStatus: seq of (char) ==> ()
+    addStatus(stat) == status := status union {stat};
+
+  -- Removes a status from the printer (status must exist in the set)
+  public removeStatus: seq of (char) ==> ()
+    removeStatus(stat) == (
+      status := status \ {stat};
+    )
+    pre stat in set status;
+
+-- GETTERS
+  -- Returns the printer status set
+  public getStatus: () ==> set of (seq of (char))
+    getStatus() == return self.status;
+
+end PrinterStatus

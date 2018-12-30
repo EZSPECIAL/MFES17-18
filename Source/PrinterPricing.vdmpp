@@ -22,6 +22,7 @@ operations
  		  return self;
  		);
 
+-- GETTERS
  	-- Returns the page price of printing A4 in black
   public getPriceA4Black: () ==> real
     getPriceA4Black() == return self.priceA4Black;

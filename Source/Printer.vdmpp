@@ -5,12 +5,12 @@ instance variables
   private printerCapabilities: PrinterCapability;
   private printerPricing: PrinterPricing;
   private printerCapacities: PrinterCapacity;
-  private isOperational: bool := true; -- TODO new class
+  private printerStatus: PrinterStatus;
 
   -- Statistics
   private pagesPrinted: nat := 0; -- TODO better reporting (divide by format and color)
   private moneyReceived: real := 0; -- TODO better reporting (divide by format and color)
-	
+
   inv moneyReceived >= 0;
 
 operations
@@ -33,7 +33,7 @@ operations
  		--post canPrintA4 = printA4 and canPrintA3 = printA3 and canPrintBlack = printBlack and canPrintColor = printColor and
  		--maxCapacityA4 = capacityA4 and maxCapacityA3 = capacityA3 and maxCapacityBlack = capacityBlack and maxCapacityColor = capacityColor
  		--and numberOfSheetsA4 = capacityA4 and numberOfSheetsA3 = capacityA3 and blackPrintsLeft = capacityBlack and colorPrintsLeft = capacityColor;
-  
+
   public print : Document * User ==> ?
   print(document, user) ==
     is not yet specified;
