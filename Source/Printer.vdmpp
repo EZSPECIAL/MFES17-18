@@ -27,7 +27,10 @@ operations
  		  return self;
  		);
 
-  -- TODO
+  -- Prints the specified document of the specified user, updates the user's balance, the printer's toner levels
+  -- and the printer's paper levels. Updates the document's pages left with the printed pages, if all pages
+  -- were printed the document is removed from the user's document list. Lastly updates the printer status
+  -- and the printer report with the newly printed page counts.
   -- Constraints:
     -- Document must be in the user's document list
     -- Printer must be capable of using the toner needed by the document
@@ -49,6 +52,10 @@ operations
     document.setPagesLeft(document.getPagesLeft() - pagesToPrint);
     if document.getPagesLeft() = 0
     then user.removeDocument(document);
+    
+    -- Update status and report
+    updatePrinterStatus();
+    updatePrinterReport(document, pagesToPrint);
   )
   pre document in set user.getDocumentList() and
       "operational" in set printerStatus.getStatus() and
@@ -165,6 +172,35 @@ operations
       then printerCapacities.setNumOfSheetsA3(printerCapacities.getNumOfSheetsA3() - pagesPrinted);
     );
 
+  -- Updates the printer status object with refill needs
+  private updatePrinterStatus: () ==> ()
+    updatePrinterStatus() == (
+      if printerCapacities.getNumOfSheetsA4() = 0
+      then printerStatus.addStatus("needA4");
+      
+      if printerCapacities.getNumOfSheetsA3() = 0
+      then printerStatus.addStatus("needA3");
+      
+      if printerCapacities.getBlackPrintsLeft() = 0
+      then printerStatus.addStatus("needBlackToner");
+      
+      if printerCapacities.getColorPrintsLeft() = 0
+      then printerStatus.addStatus("needColorToner");
+    );
+
+  -- Updates the printer report object with the printed pages
+  private updatePrinterReport: Document * nat ==> ()
+    updatePrinterReport(document, pages) == (
+      if document.getPageFormat() = '4' and document.getPageToner() = 'B'
+      then printerReport.addBlackA4(pages)
+      elseif document.getPageFormat() = '4' and document.getPageToner() = 'C'
+      then printerReport.addColorA4(pages)
+      elseif document.getPageFormat() = '3' and document.getPageToner() = 'B'
+      then printerReport.addBlackA3(pages)
+      elseif document.getPageFormat() = '3' and document.getPageToner() = 'C'
+      then printerReport.addColorA3(pages);
+    );
+
   -- TODO
   public break: ()  ==> ?
   break() == is not yet specified;
@@ -173,12 +209,9 @@ operations
   public fix: ()  ==> ?
   fix() == is not yet specified;
 
-  -- TODO remove hardcoded add operations
   -- Prints an individual report of the printer, contains number of pages printed per format and toner as well as money received from each combination of those
   public printIndividualReport: ()  ==> ()
     printIndividualReport() == (
-      printerReport.addBlackA4(20);
-      printerReport.addColorA4(15);
 
       -- Header
       IO`print("Name: ");
@@ -209,7 +242,7 @@ operations
       IO`print("Total pages printed: ");
       IO`print(sumTotalPagesPrinted());
       IO`print("\n");
-      
+
       -- Money received
       IO`print("Money from printing A4 Black: ");
       if printerCapabilities.getCanPrintA4() and printerCapabilities.getCanPrintBlack()
