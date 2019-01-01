@@ -38,8 +38,17 @@ operations
     -- User must have enough balance to print the number of pages the printer can print of the document (check numPagesToPrint())
   public print: Document * User ==> ()
   print(document, user) == (
-    document.setPagesLeft(document.getPagesLeft() - numPagesToPrint(document));
+    dcl pagesToPrint: nat := numPagesToPrint(document);
+
+    -- Update everything that depends on pagesLeft field
     user.withdraw(calcPrintingCost(document));
+    updatePrinterToner(document, pagesToPrint);
+    updatePrinterPaper(document, pagesToPrint);
+
+    -- Update document's pages left and remove document from user list if no more pages left
+    document.setPagesLeft(document.getPagesLeft() - pagesToPrint);
+    if document.getPagesLeft() = 0
+    then user.removeDocument(document);
   )
   pre document in set user.getDocumentList() and
       "operational" in set printerStatus.getStatus() and
@@ -113,6 +122,16 @@ operations
       then return false
       else return true;
     );
+    
+  -- Updates the printer toner used up when printing the specified document
+  -- 'B' means black toner, 'C' means color toner
+  private updatePrinterToner: Document * nat ==> ()
+    updatePrinterToner(document, pagesPrinted) == (
+      if document.getPageToner() = 'B'
+      then printerCapacities.setBlackPrintsLeft(printerCapacities.getBlackPrintsLeft() - pagesPrinted)
+      elseif document.getPageToner() = 'C'
+      then printerCapacities.setColorPrintsLeft(printerCapacities.getColorPrintsLeft() - pagesPrinted);
+    );
 
   -- Checks if the printer can print the page format needed by the specified document
   -- '4' means A4 and '3' means A3
@@ -134,6 +153,16 @@ operations
       elseif document.getPageFormat() = '3' and printerCapacities.getNumOfSheetsA3() = 0
       then return false
       else return true;
+    );
+
+  -- Updates the printer paper used up when printing the specified document
+  -- '4' means A4 and '3' means A3
+  private updatePrinterPaper: Document * nat ==> ()
+    updatePrinterPaper(document, pagesPrinted) == (
+      if document.getPageFormat() = '4'
+      then printerCapacities.setNumOfSheetsA4(printerCapacities.getNumOfSheetsA4() - pagesPrinted)
+      elseif document.getPageFormat() = '3'
+      then printerCapacities.setNumOfSheetsA3(printerCapacities.getNumOfSheetsA3() - pagesPrinted);
     );
 
   -- TODO
@@ -238,5 +267,13 @@ operations
   -- Returns the printer capabilities object
   public getPrinterCapabilities: () ==> PrinterCapability
     getPrinterCapabilities() == return self.printerCapabilities;
+
+  -- Returns the printer capacities object
+  public getPrinterCapacities: () ==> PrinterCapacity
+    getPrinterCapacities() == return self.printerCapacities;
+
+  -- Returns the printer status object
+  public getPrinterStatus: () ==> PrinterStatus
+    getPrinterStatus() == return self.printerStatus;
 
 end Printer

@@ -1,8 +1,7 @@
 remove hardcoded add operations in printIndividualReport
 print
-  - print removes doc from list if all printed (pagesLeft = 0)
   - print update toner -> if 0 update status
-  - print update pages left -> if 0 update status
+  - print update paper left -> if 0 update status
   - print update report
 
 break
