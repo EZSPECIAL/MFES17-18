@@ -1,10 +1,11 @@
 class Document
 instance variables
   private docName: seq of (char);
+  private pagesLeft: nat;
   private numPages: nat;
   private pageFormat: char;
   private pageToner: char;
-  
+
   inv pageFormat = '3' or pageFormat = '4';
   inv pageToner = 'B' or pageToner = 'C';
 
@@ -15,6 +16,7 @@ operations
   public Document: seq of (char) * nat * char * char ==> Document
  		Document(name, pages, format, toner) == (
  		  docName := name;
+ 		  pagesLeft := pages;
  		  numPages := pages;
  		  pageFormat := format;
  		  pageToner := toner;
@@ -26,16 +28,25 @@ operations
   pure public getDocName: () ==> seq of (char)
     getDocName() == return self.docName;
 
-  -- Returns number of pages of the document
-  public getNumPages: () ==> nat
+  -- Returns the number of pages left to print of the document
+  pure public getPagesLeft: () ==> nat
+    getPagesLeft() == return self.pagesLeft;
+
+  -- Returns the total number of pages of the document
+  pure public getNumPages: () ==> nat
     getNumPages() == return self.numPages;
-    
+
   -- Returns the page format (A3 or A4)
   pure public getPageFormat: () ==> char
     getPageFormat() == return self.pageFormat;
-    
+
   -- Returns the page toner (Black or Color)
   pure public getPageToner: () ==> char
     getPageToner() == return self.pageToner;
-    
+
+-- SETTERS
+  -- Sets the number of pages left to print of the document
+  public setPagesLeft: nat ==> ()
+    setPagesLeft(pages) == pagesLeft := pages;
+
 end Document

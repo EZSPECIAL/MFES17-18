@@ -35,7 +35,7 @@ operations
 
 -- GETTERS
   -- Returns the user's balance
-  public getBalance: () ==> real
+  pure public getBalance: () ==> real
     getBalance() == return self.balance;
 
   -- Returns the user's document list

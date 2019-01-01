@@ -24,19 +24,19 @@ operations
 
 -- GETTERS
  	-- Returns the page price of printing A4 in black
-  public getPriceA4Black: () ==> real
+  pure public getPriceA4Black: () ==> real
     getPriceA4Black() == return self.priceA4Black;
 
   -- Returns the page price of printing A4 in color
-  public getPriceA4Color: () ==> real
+  pure public getPriceA4Color: () ==> real
     getPriceA4Color() == return self.priceA4Color;
 
   -- Returns the page price of printing A3 in black
-  public getPriceA3Black: () ==> real
+  pure public getPriceA3Black: () ==> real
     getPriceA3Black() == return self.priceA3Black;
 
   -- Returns the page price of printing A3 in color
-  public getPriceA3Color: () ==> real
+  pure public getPriceA3Color: () ==> real
     getPriceA3Color() == return self.priceA3Color;
 
 end PrinterPricing

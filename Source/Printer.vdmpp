@@ -28,19 +28,44 @@ operations
  		);
 
   -- TODO
-  -- Document must be in the user's document list
-  -- Printer must be capable of using the toner needed by the document
-  -- Printer must be capable of using the page format needed by the document
+  -- Constraints:
+    -- Document must be in the user's document list
+    -- Printer must be capable of using the toner needed by the document
+    -- Printer must be capable of using the page format needed by the document
+    -- User must have enough balance to print the document
   public print: Document * User ==> ()
   print(document, user) == (
-    IO`print("placeholder");
+    user.withdraw(calcPrintingCost(document));
   )
   pre document in set user.getDocumentList() and
+      user.getBalance() >= calcPrintingCost(document) and
       checkPrinterTonerCapability(document) and
       checkPrinterPageFormatCapability(document);
 
+  -- Computes the total amount of pages that can be printed of the specified document
+  public numPagesToPrint: Document ==> nat
+    numPagesToPrint(document) == (
+      if document.getPageFormat() = '4' and document.getPageToner() = 'B'
+      then return minNat(printerCapacities.getNumOfSheetsA4(), printerCapacities.getBlackPrintsLeft())
+      elseif document.getPageFormat() = '4' and document.getPageToner() = 'C'
+      then return minNat(printerCapacities.getNumOfSheetsA4(), printerCapacities.getColorPrintsLeft())
+      elseif document.getPageFormat() = '3' and document.getPageToner() = 'B'
+      then return minNat(printerCapacities.getNumOfSheetsA3(), printerCapacities.getBlackPrintsLeft())
+      elseif document.getPageFormat() = '3' and document.getPageToner() = 'C'
+      then return minNat(printerCapacities.getNumOfSheetsA3(), printerCapacities.getColorPrintsLeft())
+      else return 0;
+    );
+
+  -- Returns the minimum number between two natural numbers
+  public minNat: nat * nat ==> nat
+    minNat(a, b) == (
+      if a > b
+      then return b
+      else return a;
+    );
+
   -- Calculates the total amount of money needed to print the specified document
-  public calcPrintingCost: Document ==> real
+  pure public calcPrintingCost: Document ==> real
     calcPrintingCost(document) == (
       if document.getPageFormat() = '4' and document.getPageToner() = 'B'
       then return printerPricing.getPriceA4Black() * document.getNumPages()
@@ -56,10 +81,10 @@ operations
   -- Checks if the printer toner can print the specified document
   -- 'B' means black toner, 'C' means color toner
   pure private checkPrinterTonerCapability: Document ==> bool
-    checkPrinterTonerCapability(doc) == (
-      if doc.getPageToner() = 'B' and printerCapabilities.getCanPrintBlack()
+    checkPrinterTonerCapability(document) == (
+      if document.getPageToner() = 'B' and printerCapabilities.getCanPrintBlack()
       then return true
-      elseif doc.getPageToner() = 'C' and printerCapabilities.getCanPrintColor()
+      elseif document.getPageToner() = 'C' and printerCapabilities.getCanPrintColor()
       then return true
       else return false;
     );
@@ -67,10 +92,10 @@ operations
   -- Checks if the printer can print the page format needed by the specified document
   -- '4' means A4 and '3' means A3
   pure private checkPrinterPageFormatCapability: Document ==> bool
-    checkPrinterPageFormatCapability(doc) == (
-      if doc.getPageFormat() = '4' and printerCapabilities.getCanPrintA4()
+    checkPrinterPageFormatCapability(document) == (
+      if document.getPageFormat() = '4' and printerCapabilities.getCanPrintA4()
       then return true
-      elseif doc.getPageFormat() = '3' and printerCapabilities.getCanPrintA3()
+      elseif document.getPageFormat() = '3' and printerCapabilities.getCanPrintA3()
       then return true
       else return false;
     );

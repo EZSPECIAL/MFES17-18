@@ -2,10 +2,8 @@ remove hardcoded add operations in printIndividualReport
 print
   - print removes doc from list if all printed
   - print subtracts the max available pages from the doc supplied (add left / total to document)
-  - print checks user balance beforehand
   - print checks if pages left = 0
   - print checks if toner left = 0
-  - print subtracts user balance
   - print update toner -> if 0 update status
   - print update pages left -> if 0 update status
   - print update report
