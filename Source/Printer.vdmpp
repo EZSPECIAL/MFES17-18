@@ -28,12 +28,52 @@ operations
  		);
 
   -- TODO
-  public print: Document * User ==> ?
-  print(document, user) == is not yet specified;
+  -- Document must be in the user's document list
+  -- Printer must be capable of using the toner needed by the document
+  -- Printer must be capable of using the page format needed by the document
+  public print: Document * User ==> ()
+  print(document, user) == (
+    IO`print("placeholder");
+  )
+  pre document in set user.getDocumentList() and
+      checkPrinterTonerCapability(document) and
+      checkPrinterPageFormatCapability(document);
 
-  -- TODO
-  public printingCost: Document ==> ?
-  printingCost(document) == is not yet specified;
+  -- Calculates the total amount of money needed to print the specified document
+  public calcPrintingCost: Document ==> real
+    calcPrintingCost(document) == (
+      if document.getPageFormat() = '4' and document.getPageToner() = 'B'
+      then return printerPricing.getPriceA4Black() * document.getNumPages()
+      elseif document.getPageFormat() = '4' and document.getPageToner() = 'C'
+      then return printerPricing.getPriceA4Color() * document.getNumPages()
+      elseif document.getPageFormat() = '3' and document.getPageToner() = 'B'
+      then return printerPricing.getPriceA3Black() * document.getNumPages()
+      elseif document.getPageFormat() = '3' and document.getPageToner() = 'C'
+      then return printerPricing.getPriceA3Color() * document.getNumPages()
+      else return 0;
+    );
+
+  -- Checks if the printer toner can print the specified document
+  -- 'B' means black toner, 'C' means color toner
+  pure private checkPrinterTonerCapability: Document ==> bool
+    checkPrinterTonerCapability(doc) == (
+      if doc.getPageToner() = 'B' and printerCapabilities.getCanPrintBlack()
+      then return true
+      elseif doc.getPageToner() = 'C' and printerCapabilities.getCanPrintColor()
+      then return true
+      else return false;
+    );
+
+  -- Checks if the printer can print the page format needed by the specified document
+  -- '4' means A4 and '3' means A3
+  pure private checkPrinterPageFormatCapability: Document ==> bool
+    checkPrinterPageFormatCapability(doc) == (
+      if doc.getPageFormat() = '4' and printerCapabilities.getCanPrintA4()
+      then return true
+      elseif doc.getPageFormat() = '3' and printerCapabilities.getCanPrintA3()
+      then return true
+      else return false;
+    );
 
   -- TODO
   public break: ()  ==> ?

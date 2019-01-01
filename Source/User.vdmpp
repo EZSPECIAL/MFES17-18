@@ -39,7 +39,7 @@ operations
     getBalance() == return self.balance;
 
   -- Returns the user's document list
-  public getDocumentList: () ==> set of (Document)
+  pure public getDocumentList: () ==> set of (Document)
     getDocumentList() == return self.documentList;
 
 end User

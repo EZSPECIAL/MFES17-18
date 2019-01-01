@@ -21,19 +21,19 @@ operations
 
 -- GETTERS
  	-- Returns whether the printer can print in A4
-  public getCanPrintA4: () ==> bool
+  pure public getCanPrintA4: () ==> bool
     getCanPrintA4() == return self.canPrintA4;
 
   -- Returns whether the printer can print in A3
-  public getCanPrintA3: () ==> bool
+  pure public getCanPrintA3: () ==> bool
     getCanPrintA3() == return self.canPrintA3;
 
   -- Returns whether the printer can print in black
-  public getCanPrintBlack: () ==> bool
+  pure public getCanPrintBlack: () ==> bool
     getCanPrintBlack() == return self.canPrintBlack;
 
   -- Returns whether the printer can print in color
-  public getCanPrintColor: () ==> bool
+  pure public getCanPrintColor: () ==> bool
     getCanPrintColor() == return self.canPrintColor;
 
 end PrinterCapability

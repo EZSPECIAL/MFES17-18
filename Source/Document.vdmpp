@@ -31,11 +31,11 @@ operations
     getNumPages() == return self.numPages;
     
   -- Returns the page format (A3 or A4)
-  public getPageFormat: () ==> char
+  pure public getPageFormat: () ==> char
     getPageFormat() == return self.pageFormat;
     
   -- Returns the page toner (Black or Color)
-  public getPageToner: () ==> char
+  pure public getPageToner: () ==> char
     getPageToner() == return self.pageToner;
     
 end Document
