@@ -1,0 +1,33 @@
+class PrinterTest
+operations
+
+  -- Checks if a boolean expression is true
+  private assertTrue: bool ==> ()
+	  assertTrue(cond) == return pre cond;
+
+  -- Checks values are equal
+	private assertEqual: ? * ? ==> ()
+	  assertEqual(expected, actual) == return post expected = actual;
+
+  private testPrinterStatus: () ==> ()
+    testPrinterStatus() == (
+      dcl p1: PrinterStatus := new PrinterStatus();
+      dcl p2: PrinterStatus := new PrinterStatus({"operational","needBlackToner","needColorToner"});
+      dcl p3: PrinterStatus := new PrinterStatus({"needFixing"});
+      p1.addStatus("needA4");
+      p1.addStatus("needA3");
+      p1.removeStatus("needA4");
+      p1.removeStatus("needA3");
+      p2.removeStatus("needColorToner");
+      p2.removeStatus("needBlackToner");
+    );
+
+   -- Testing entry point, calls all the test functions in succession
+   public static main: () ==> ()
+     main() == (
+       dcl testSuite: PrinterTest := new PrinterTest();
+       
+       testSuite.testPrinterStatus();
+     );
+
+end PrinterTest
