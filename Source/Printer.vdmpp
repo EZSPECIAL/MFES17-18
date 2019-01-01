@@ -32,7 +32,7 @@ operations
     -- Document must be in the user's document list
     -- Printer must be capable of using the toner needed by the document
     -- Printer must be capable of using the page format needed by the document
-    -- User must have enough balance to print the document
+    -- User must have enough balance to print the number of pages the printer can print of the document
   public print: Document * User ==> ()
   print(document, user) == (
     user.withdraw(calcPrintingCost(document));
@@ -43,38 +43,45 @@ operations
       checkPrinterPageFormatCapability(document);
 
   -- Computes the total amount of pages that can be printed of the specified document
-  public numPagesToPrint: Document ==> nat
+  pure public numPagesToPrint: Document ==> nat
     numPagesToPrint(document) == (
+      dcl intPages: nat := 0;
+    
+      -- Check max pages that the printer can print
       if document.getPageFormat() = '4' and document.getPageToner() = 'B'
-      then return minNat(printerCapacities.getNumOfSheetsA4(), printerCapacities.getBlackPrintsLeft())
+      then intPages := minNat(printerCapacities.getNumOfSheetsA4(), printerCapacities.getBlackPrintsLeft())
       elseif document.getPageFormat() = '4' and document.getPageToner() = 'C'
-      then return minNat(printerCapacities.getNumOfSheetsA4(), printerCapacities.getColorPrintsLeft())
+      then intPages := minNat(printerCapacities.getNumOfSheetsA4(), printerCapacities.getColorPrintsLeft())
       elseif document.getPageFormat() = '3' and document.getPageToner() = 'B'
-      then return minNat(printerCapacities.getNumOfSheetsA3(), printerCapacities.getBlackPrintsLeft())
+      then intPages := minNat(printerCapacities.getNumOfSheetsA3(), printerCapacities.getBlackPrintsLeft())
       elseif document.getPageFormat() = '3' and document.getPageToner() = 'C'
-      then return minNat(printerCapacities.getNumOfSheetsA3(), printerCapacities.getColorPrintsLeft())
-      else return 0;
+      then intPages := minNat(printerCapacities.getNumOfSheetsA3(), printerCapacities.getColorPrintsLeft());
+      
+      -- Return the document's pages left if the printer can print the entire document or the max the printer can print
+      if document.getPagesLeft() > intPages
+      then return intPages
+      else return document.getPagesLeft();
     );
 
   -- Returns the minimum number between two natural numbers
-  public minNat: nat * nat ==> nat
+  pure private minNat: nat * nat ==> nat
     minNat(a, b) == (
       if a > b
       then return b
       else return a;
     );
 
-  -- Calculates the total amount of money needed to print the specified document
+  -- Calculates the total amount of money needed to print the maximum possible pages of the specified document (may not be the entire document)
   pure public calcPrintingCost: Document ==> real
     calcPrintingCost(document) == (
       if document.getPageFormat() = '4' and document.getPageToner() = 'B'
-      then return printerPricing.getPriceA4Black() * document.getNumPages()
+      then return printerPricing.getPriceA4Black() * numPagesToPrint(document)
       elseif document.getPageFormat() = '4' and document.getPageToner() = 'C'
-      then return printerPricing.getPriceA4Color() * document.getNumPages()
+      then return printerPricing.getPriceA4Color() * numPagesToPrint(document)
       elseif document.getPageFormat() = '3' and document.getPageToner() = 'B'
-      then return printerPricing.getPriceA3Black() * document.getNumPages()
+      then return printerPricing.getPriceA3Black() * numPagesToPrint(document)
       elseif document.getPageFormat() = '3' and document.getPageToner() = 'C'
-      then return printerPricing.getPriceA3Color() * document.getNumPages()
+      then return printerPricing.getPriceA3Color() * numPagesToPrint(document)
       else return 0;
     );
 

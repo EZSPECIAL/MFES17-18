@@ -48,19 +48,19 @@ operations
     getMaxCapacityColor() == return self.maxCapacityColor;
 
  	-- Returns the number of A4 pages left in the tray
-  public getNumOfSheetsA4: () ==> nat
+  pure public getNumOfSheetsA4: () ==> nat
     getNumOfSheetsA4() == return self.numOfSheetsA4;
 
   -- Returns the number of A3 pages left in the tray
-  public getNumOfSheetsA3: () ==> nat
+  pure public getNumOfSheetsA3: () ==> nat
     getNumOfSheetsA3() == return self.numOfSheetsA3;
 
   -- Returns the number of black prints left
-  public getBlackPrintsLeft: () ==> nat
+  pure public getBlackPrintsLeft: () ==> nat
     getBlackPrintsLeft() == return self.blackPrintsLeft;
 
   -- Returns the number of color prints left
-  public getColorPrintsLeft: () ==> nat
+  pure public getColorPrintsLeft: () ==> nat
     getColorPrintsLeft() == return self.colorPrintsLeft;
 
 -- SETTERS
