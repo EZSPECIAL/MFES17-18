@@ -1,9 +1,5 @@
 addStatus() can break system -> postcondition on print() / break() / fix() fails though
 
-fix
-  - fix specific function
-  - fix all
-
 VDM++ Tests
 JAVA Interface
 Report
