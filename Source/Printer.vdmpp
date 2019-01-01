@@ -49,12 +49,12 @@ operations
     printIndividualReport() == (
       printerReport.addBlackA4(20);
       printerReport.addColorA4(15);
-      
+
       -- Header
       IO`print("Name: ");
       IO`print(self.printerName);
       IO`print("\n");
-      
+
       -- Pages printed
       IO`print("Number of A4 Black pages printed: ");
       if printerCapabilities.getCanPrintA4() and printerCapabilities.getCanPrintBlack()
@@ -125,5 +125,17 @@ operations
   -- Returns the printer name
   pure public getPrinterName: () ==> seq of (char)
     getPrinterName() == return self.printerName;
+
+  -- Returns the printer report object
+  public getPrinterReport: () ==> PrinterReport
+    getPrinterReport() == return self.printerReport;
+
+  -- Returns the printer pricing object
+  public getPrinterPricing: () ==> PrinterPricing
+    getPrinterPricing() == return self.printerPricing;
+
+  -- Returns the printer capabilities object
+  public getPrinterCapabilities: () ==> PrinterCapability
+    getPrinterCapabilities() == return self.printerCapabilities;
 
 end Printer

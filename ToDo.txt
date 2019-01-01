@@ -1,8 +1,5 @@
-global report
-  - individual page prints
-  - individual money received
-  - number of printers that print each format?
 remove hardcoded add operations in printIndividualReport
+document have name (unique!)
 
 user can print from their own document list
 printing subtracts balance from user

@@ -3,7 +3,6 @@ instance variables
   private printerList: set of (Printer) := {};
 
 operations
-
   -- Constructs a network using default parameters (empty set of printers)
   public Network: () ==> Network
  		Network() == return self;
@@ -28,31 +27,102 @@ operations
     for all printer in set printerList do printer.printIndividualReport();
   );
   
-  -- TODO
+  -- Prints a global report of the printer network, contains number of pages printed per format and toner as well as money received from each combination of those
   public printGlobalReport: () ==> ()
     printGlobalReport() == (
+
+      dcl numA4BlackPrinters: nat := 0;
+      dcl numA4ColorPrinters: nat := 0;
+      dcl numA3BlackPrinters: nat := 0;
+      dcl numA3ColorPrinters: nat := 0;
+
+      dcl sumA4BlackPages: nat := 0;
+      dcl sumA4ColorPages: nat := 0;
+      dcl sumA3BlackPages: nat := 0;
+      dcl sumA3ColorPages: nat := 0;
       dcl sumPages: nat := 0;
+      
+      dcl sumA4BlackMoney: real := 0;
+      dcl sumA4ColorMoney: real := 0;
+      dcl sumA3BlackMoney: real := 0;
+      dcl sumA3ColorMoney: real := 0;
       dcl sumMoney: real := 0;
       
       -- Sum the total pages printed and money received of all network printers
       for all printer in set printerList do (
-        dcl pageCount: nat := printer.sumTotalPagesPrinted();
-        dcl moneyCount: real := printer.sumTotalMoneyReceived();
-        sumPages := sumPages + pageCount;
-        sumMoney := sumMoney + moneyCount;
+
+        -- Parse printer capabilities
+        if printer.getPrinterCapabilities().getCanPrintA4() and printer.getPrinterCapabilities().getCanPrintBlack()
+        then numA4BlackPrinters := numA4BlackPrinters + 1;
+        if printer.getPrinterCapabilities().getCanPrintA4() and printer.getPrinterCapabilities().getCanPrintColor()
+        then numA4ColorPrinters := numA4ColorPrinters + 1;
+        if printer.getPrinterCapabilities().getCanPrintA3() and printer.getPrinterCapabilities().getCanPrintBlack()
+        then numA3BlackPrinters := numA3BlackPrinters + 1;
+        if printer.getPrinterCapabilities().getCanPrintA3() and printer.getPrinterCapabilities().getCanPrintColor()
+        then numA3ColorPrinters := numA3ColorPrinters + 1;
+        
+        -- Sum pages printed per type
+        sumA4BlackPages := sumA4BlackPages + printer.getPrinterReport().getBlackA4Printed();
+        sumA4ColorPages := sumA4ColorPages + printer.getPrinterReport().getColorA4Printed();
+        sumA3BlackPages := sumA3BlackPages + printer.getPrinterReport().getBlackA3Printed();
+        sumA3ColorPages := sumA3ColorPages + printer.getPrinterReport().getColorA3Printed();
+        sumPages := sumPages + printer.sumTotalPagesPrinted();
+
+        -- Sum money received from each type of print
+        sumA4BlackMoney := sumA4BlackMoney + printer.getPrinterPricing().getPriceA4Black() * printer.getPrinterReport().getBlackA4Printed();
+        sumA4ColorMoney := sumA4ColorMoney + printer.getPrinterPricing().getPriceA4Color() * printer.getPrinterReport().getColorA4Printed();
+        sumA3BlackMoney := sumA3BlackMoney + printer.getPrinterPricing().getPriceA3Black() * printer.getPrinterReport().getBlackA3Printed();
+        sumA3ColorMoney := sumA3ColorMoney + printer.getPrinterPricing().getPriceA3Color() * printer.getPrinterReport().getColorA3Printed();
+        sumMoney := sumMoney + printer.sumTotalMoneyReceived();
       );
       
       -- Header
       IO`print("Printers in network: ");
       IO`print(card self.printerList);
       IO`print("\n");
+      IO`print("A4 Black capable printers: ");
+      IO`print(numA4BlackPrinters);
+      IO`print("\n");
+      IO`print("A4 Color capable printers: ");
+      IO`print(numA4ColorPrinters);
+      IO`print("\n");
+      IO`print("A3 Black capable printers: ");
+      IO`print(numA3BlackPrinters);
+      IO`print("\n");
+      IO`print("A3 Color capable printers: ");
+      IO`print(numA3ColorPrinters);
+      IO`print("\n");
       
       -- Pages printed
+      IO`print("Number of A4 Black pages printed: ");
+      IO`print(sumA4BlackPages);
+      IO`print("\n");
+      IO`print("Number of A4 Color pages printed: ");
+      IO`print(sumA4ColorPages);
+      IO`print("\n");
+      IO`print("Number of A3 Black pages printed: ");
+      IO`print(sumA3BlackPages);
+      IO`print("\n");
+      IO`print("Number of A3 Color pages printed: ");
+      IO`print(sumA3ColorPages);
+      IO`print("\n");
       IO`print("Total pages printed: ");
       IO`print(sumPages);
       IO`print("\n");
       
       -- Money received
+      IO`print("Money from printing A4 Black: ");
+      IO`print(sumA4BlackMoney);
+      IO`print("\n");
+      IO`print("Money from printing A4 Color: ");
+      IO`print(sumA4ColorMoney);
+      IO`print("\n");
+      IO`print("Money from printing A3 Black: ");
+      IO`print(sumA3BlackMoney);
+      IO`print("\n");
+      IO`print("Money from printing A3 Color: ");
+      IO`print(sumA3ColorMoney);
+      IO`print("\n");
       IO`print("Total money: ");
       IO`print(sumMoney);
       IO`print("\n");
