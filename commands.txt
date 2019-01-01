@@ -22,17 +22,26 @@ print p.printIndividualReport()
 
 -- Test user
 create u := new User(20.0)
-create d1 := new Document(40, '4', 'B')
-create d2 := new Document(25, '3', 'C')
+create d1 := new Document("test", 40, '4', 'B')
+create d2 := new Document("hello", 25, '3', 'C')
 print u.addDocument(d1)
 print u.addDocument(d2)
 print u.removeDocument(d1)
 print u.deposit(20)
 print u.withdraw(30)
 
+-- Test duplicate document
+create u := new User(20.0)
+create u2 := new User(25.0)
+create d1 := new Document("test", 40, '4', 'B')
+create d2 := new Document("test", 25, '3', 'C')
+print u.addDocument(d1)
+print u2.addDocument(d1)
+print u.addDocument(d2)
+
 -- Fail documents
-create d := new Document(20, '2', 'B')
-create d := new Document(30, '3', 'D')
+create d := new Document("hello", 20, '2', 'B')
+create d := new Document("hello", 30, '3', 'D')
 
 -- Fail capabilities
 create pc := new PrinterCapability(false, false, false,false)

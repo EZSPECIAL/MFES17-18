@@ -1,12 +1,20 @@
 remove hardcoded add operations in printIndividualReport
-document have name (unique!)
+print
+  - user can print from their own list
+  - print removes doc from list if all printed
+  - print subtracts the max available pages from the doc supplied
+  - print checks user balance beforehand
+  - print checks its capabilities and toner/pages levels beforehand
+  - print subtracts user balance
 
-user can print from their own document list
-printing subtracts balance from user
-printer malfunction (break / fix)
+break
+  - break specific function
+  - break all
 
-TESTS
-  PrinterStatus
-    - test all invariants
-    - test addStatus not in available status
-    - test removeStatus not in current status
+fix
+  - fix specific function
+  - fix all
+
+VDM++ Tests !!!
+Java code + menu
+Report

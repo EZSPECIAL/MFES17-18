@@ -1,28 +1,34 @@
 class Document
 instance variables
-  pages: nat;
-  pageFormat: char;
-  pageToner: char;
+  private docName: seq of (char);
+  private numPages: nat;
+  private pageFormat: char;
+  private pageToner: char;
   
   inv pageFormat = '3' or pageFormat = '4';
   inv pageToner = 'B' or pageToner = 'C';
 
 operations
-  -- Constructs a document with specified parameters (numPages, pageFormat, pageToner)
+  -- Constructs a document with specified parameters (docName, numPages, pageFormat, pageToner)
   -- pageFormat must be '3' or '4'
   -- pageToner must be 'B' or 'C'
-  public Document: nat * char * char ==> Document
- 		Document(pgs, format, toner) == (
- 		  pages := pgs;
+  public Document: seq of (char) * nat * char * char ==> Document
+ 		Document(name, pages, format, toner) == (
+ 		  docName := name;
+ 		  numPages := pages;
  		  pageFormat := format;
  		  pageToner := toner;
  		  return self;
  		);
 
 -- GETTERS
+  -- Returns the document name
+  pure public getDocName: () ==> seq of (char)
+    getDocName() == return self.docName;
+
   -- Returns number of pages of the document
-  public getPages: () ==> nat
-    getPages() == return self.pages;
+  public getNumPages: () ==> nat
+    getNumPages() == return self.numPages;
     
   -- Returns the page format (A3 or A4)
   public getPageFormat: () ==> char
