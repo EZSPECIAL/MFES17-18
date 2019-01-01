@@ -32,19 +32,19 @@ operations
 
 -- GETTERS
  	-- Returns the max capacity of A4 pages
-  public getMaxCapacityA4: () ==> nat
+  pure public getMaxCapacityA4: () ==> nat
     getMaxCapacityA4() == return self.maxCapacityA4;
 
   -- Returns the max capacity of A3 pages
-  public getMaxCapacityA3: () ==> nat
+  pure public getMaxCapacityA3: () ==> nat
     getMaxCapacityA3() == return self.maxCapacityA3;
 
   -- Returns the max capacity of the black toner
-  public getMaxCapacityBlack: () ==> nat
+  pure public getMaxCapacityBlack: () ==> nat
     getMaxCapacityBlack() == return self.maxCapacityBlack;
 
   -- Returns the max capacity of the color toners
-  public getMaxCapacityColor: () ==> nat
+  pure public getMaxCapacityColor: () ==> nat
     getMaxCapacityColor() == return self.maxCapacityColor;
 
  	-- Returns the number of A4 pages left in the tray

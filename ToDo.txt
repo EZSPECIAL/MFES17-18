@@ -1,11 +1,9 @@
-break
-  - break specific function
-  - break all
+addStatus() can break system -> postcondition on print() / break() / fix() fails though
 
 fix
   - fix specific function
   - fix all
 
-VDM++ Tests !!!
-Java code + menu
+VDM++ Tests
+JAVA Interface
 Report

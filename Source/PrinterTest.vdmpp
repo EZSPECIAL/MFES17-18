@@ -12,14 +12,14 @@ operations
   private testPrinterStatus: () ==> ()
     testPrinterStatus() == (
       dcl p1: PrinterStatus := new PrinterStatus();
-      dcl p2: PrinterStatus := new PrinterStatus({"operational","needBlackToner","needColorToner"});
-      dcl p3: PrinterStatus := new PrinterStatus({"needFixing"});
+      -- dcl p2: PrinterStatus := new PrinterStatus({"operational","needBlackToner","needColorToner"});
+      -- dcl p3: PrinterStatus := new PrinterStatus({"needFixing"});
       p1.addStatus("needA4");
       p1.addStatus("needA3");
       p1.removeStatus("needA4");
       p1.removeStatus("needA3");
-      p2.removeStatus("needColorToner");
-      p2.removeStatus("needBlackToner");
+      -- p2.removeStatus("needColorToner");
+      -- p2.removeStatus("needBlackToner");
     );
 
    -- Testing entry point, calls all the test functions in succession

@@ -11,6 +11,24 @@ instance variables
   -- Report
   private printerReport: PrinterReport := new PrinterReport();
 
+  -- Printer cannot have capacity of paper/toners it can't use
+  inv printerCapabilities.getCanPrintA4() = false => printerCapacities.getMaxCapacityA4() = 0;
+  inv printerCapabilities.getCanPrintA3() = false => printerCapacities.getMaxCapacityA3() = 0;
+  inv printerCapabilities.getCanPrintBlack() = false => printerCapacities.getMaxCapacityBlack() = 0;
+  inv printerCapabilities.getCanPrintColor() = false => printerCapacities.getMaxCapacityColor() = 0;
+  
+  -- Printer must have capacity of paper/toners it can use
+  inv printerCapabilities.getCanPrintA4() = true => printerCapacities.getMaxCapacityA4() > 0;
+  inv printerCapabilities.getCanPrintA3() = true => printerCapacities.getMaxCapacityA3() > 0;
+  inv printerCapabilities.getCanPrintBlack() = true => printerCapacities.getMaxCapacityBlack() > 0;
+  inv printerCapabilities.getCanPrintColor() = true => printerCapacities.getMaxCapacityColor() > 0;
+
+  -- Printer cannot have status types that can't be possible for its capabilities
+  inv "needA4" in set printerStatus.getStatus() => printerCapabilities.getCanPrintA4() = true;
+  inv "needA3" in set printerStatus.getStatus() => printerCapabilities.getCanPrintA3() = true;
+  inv "needBlackToner" in set printerStatus.getStatus() => printerCapabilities.getCanPrintBlack() = true;
+  inv "needColorToner" in set printerStatus.getStatus() => printerCapabilities.getCanPrintColor() = true;
+
 operations
   -- Constructs a printer object with the specified parameters (printerName, printerCapabilities, printerPricing, printerCapacities, printerStatus)
   -- printerCapabilities defines the page format and toner the printer has available
@@ -63,7 +81,8 @@ operations
       checkPrinterTonerCapability(document) and
       checkPrinterPageFormatCapability(document) and
       checkPrinterHasToner(document) and
-      checkPrinterHasPaper(document);
+      checkPrinterHasPaper(document)
+  post checkStatusCapacityCoupling();
 
   -- Computes the total amount of pages that can be printed of the specified document
   pure public numPagesToPrint: Document ==> nat
@@ -106,6 +125,18 @@ operations
       elseif document.getPageFormat() = '3' and document.getPageToner() = 'C'
       then return printerPricing.getPriceA3Color() * numPagesToPrint(document)
       else return 0;
+    );
+
+  -- Checks printer status/capacity coupling (cannot have a status without the paper/toner levels being correct for it)
+  pure private checkStatusCapacityCoupling: () ==> bool
+    checkStatusCapacityCoupling() == (
+
+      if printerCapabilities.getCanPrintA4() then return "needA4" in set printerStatus.getStatus() <=> printerCapacities.getNumOfSheetsA4() = 0;
+      if printerCapabilities.getCanPrintA3() then return "needA3" in set printerStatus.getStatus() <=> printerCapacities.getNumOfSheetsA3() = 0;
+      if printerCapabilities.getCanPrintBlack() then return "needBlackToner" in set printerStatus.getStatus() <=> printerCapacities.getBlackPrintsLeft() = 0;
+      if printerCapabilities.getCanPrintColor() then return "needColorToner" in set printerStatus.getStatus() <=> printerCapacities.getColorPrintsLeft() = 0;
+      
+      return true;
     );
 
   -- Checks if the printer toner can print the specified document
@@ -175,16 +206,16 @@ operations
   -- Updates the printer status object with refill needs
   private updatePrinterStatus: () ==> ()
     updatePrinterStatus() == (
-      if printerCapacities.getNumOfSheetsA4() = 0
+      if printerCapacities.getNumOfSheetsA4() = 0 and printerCapabilities.getCanPrintA4()
       then printerStatus.addStatus("needA4");
       
-      if printerCapacities.getNumOfSheetsA3() = 0
+      if printerCapacities.getNumOfSheetsA3() = 0 and printerCapabilities.getCanPrintA3()
       then printerStatus.addStatus("needA3");
       
-      if printerCapacities.getBlackPrintsLeft() = 0
+      if printerCapacities.getBlackPrintsLeft() = 0 and printerCapabilities.getCanPrintBlack()
       then printerStatus.addStatus("needBlackToner");
       
-      if printerCapacities.getColorPrintsLeft() = 0
+      if printerCapacities.getColorPrintsLeft() = 0 and printerCapabilities.getCanPrintColor()
       then printerStatus.addStatus("needColorToner");
     );
 
@@ -201,16 +232,82 @@ operations
       then printerReport.addColorA3(pages);
     );
 
-  -- TODO
-  public break: ()  ==> ?
-  break() == is not yet specified;
+  -- Breaks printer with the specified negative status
+  -- Status supplied must be in the available status types (check PrinterStatus for available status types)
+  public break: set of (seq of (char)) ==> ()
+    break(statusSet) == (
+      for all status in set statusSet do (
+      
+        -- Add status related with paper/toner levels
+        if status = "needA4"
+        then (
+               printerCapacities.setNumOfSheetsA4(0);
+               printerStatus.addStatus("needA4");
+             )
+        elseif status = "needA3"
+        then (
+               printerCapacities.setNumOfSheetsA3(0);
+               printerStatus.addStatus("needA3");
+             )
+        elseif status = "needBlackToner"
+        then (
+               printerCapacities.setBlackPrintsLeft(0);
+               printerStatus.addStatus("needBlackToner"); 
+             )
+        elseif status = "needColorToner"
+        then (
+               printerCapacities.setColorPrintsLeft(0);
+               printerStatus.addStatus("needColorToner"); 
+             );
+        
+        -- Toggle operational status according to supplied status set
+        if status = "needFixing" and "operational" in set printerStatus.getStatus()
+        then printerStatus.flipOperationalStatus()
+      );
+    )
+    pre forall s in set statusSet & s in set printerStatus.getStatusT()
+    post checkStatusCapacityCoupling();
+
+  -- Sets all negative status types that can be set for the printer's capabilities
+  public breakAll: () ==> ()
+    breakAll() == (
+
+      if printerCapabilities.getCanPrintA4()
+      then (
+             printerCapacities.setNumOfSheetsA4(0);
+             printerStatus.addStatus("needA4");
+           );
+
+      if printerCapabilities.getCanPrintA3()
+      then (
+             printerCapacities.setNumOfSheetsA3(0);
+             printerStatus.addStatus("needA3");
+           );
+
+      if printerCapabilities.getCanPrintBlack()
+      then (
+             printerCapacities.setBlackPrintsLeft(0);
+             printerStatus.addStatus("needBlackToner");
+           );
+
+      if printerCapabilities.getCanPrintColor()
+      then (
+             printerCapacities.setColorPrintsLeft(0);
+             printerStatus.addStatus("needColorToner");
+           );
+
+      -- Toggle operational status if printer is operational
+      if "operational" in set printerStatus.getStatus()
+      then printerStatus.flipOperationalStatus()
+    )
+    post checkStatusCapacityCoupling();
 
   -- TODO
   public fix: ()  ==> ?
   fix() == is not yet specified;
 
   -- Prints an individual report of the printer, contains number of pages printed per format and toner as well as money received from each combination of those
-  public printIndividualReport: ()  ==> ()
+  public printIndividualReport: () ==> ()
     printIndividualReport() == (
 
       -- Header

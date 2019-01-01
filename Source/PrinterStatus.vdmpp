@@ -20,16 +20,6 @@ operations
   public PrinterStatus: () ==> PrinterStatus
  		PrinterStatus() == return self;
 
-  -- Constructs a printer status object with specific parameters (status)
-  -- Must have "operational" or "needFixing", but not both
-  -- Must use the values of statusT instance variable
-  -- e.g. {"needA4", "operational"}
-  public PrinterStatus: set of (seq of (char)) ==> PrinterStatus
- 		PrinterStatus(statusSet) == (
- 		  status := statusSet;
- 		  return self;
- 		);
-
   -- Adds a status to the printer (status must be from the available status)
   public addStatus: seq of (char) ==> ()
     addStatus(stat) == status := status union {stat};
@@ -55,5 +45,9 @@ operations
   -- Returns the printer status set
   pure public getStatus: () ==> set of (seq of (char))
     getStatus() == return self.status;
+
+  -- Returns the available printer status types
+  pure public getStatusT: () ==> set of (seq of (char))
+    getStatusT() == return self.statusT;
 
 end PrinterStatus
