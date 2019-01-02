@@ -6,17 +6,13 @@ VDM++ Tests (document must have > 0 pages)
 JAVA Interface (test on linux)
 main menu
     user menu
-        create user             (done)
-        list user (summary)     (done)
-        list user documents
-        add document to user [document name unique inside same user]
+        create user                                                     (done)
+        list user (summary)                                             (done)
+        list user documents                                             (missing pretty print)
+        add document to user [document name unique inside same user]    (missing constraint)
         remove document from user
     document menu
-        create document [pageFormat must be '3' or '4' / pageToner must be 'B' or 'C' / pages > 0]
-            A4 Black
-            A4 Color
-            A3 Black
-            A3 Color
-        list documents
+        create document                                                 (done)
+        list documents                                                  (done)
 
 Report

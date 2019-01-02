@@ -1,5 +1,6 @@
 package MFESTA.java;
 
+import MFESTA.Document;
 import MFESTA.User;
 
 public class ObjectHandler {
@@ -12,5 +13,9 @@ public class ObjectHandler {
 	 */
 	public User createUser(double balance) {
 		return new User(balance);
+	}
+	
+	public Document createDocument(String name, int pages, Character format, Character toner) {
+		return new Document(name, pages, format, toner);
 	}
 }
