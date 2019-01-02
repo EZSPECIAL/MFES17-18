@@ -7,8 +7,9 @@ main menu
         create user             (done)
         list user (summary)     (done)
         list user documents
+        add document to user [document name unique inside same user]
     document menu
-        create document
+        create document [pageFormat must be '3' or '4' / pageToner must be 'B' or 'C' / pages > 0]
         list documents
 
 Report

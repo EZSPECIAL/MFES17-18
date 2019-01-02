@@ -8,6 +8,7 @@ instance variables
 
   inv pageFormat = '3' or pageFormat = '4';
   inv pageToner = 'B' or pageToner = 'C';
+  inv numPages > 0;
 
 operations
   -- Constructs a document with specified parameters (docName, numPages, pageFormat, pageToner)
