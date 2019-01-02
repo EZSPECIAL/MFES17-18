@@ -33,6 +33,11 @@ public class Network {
     printerList = SetUtil.union(Utils.copy(printerList), SetUtil.set(printer));
   }
 
+  public void removePrinter(final Printer printer) {
+
+    printerList = SetUtil.diff(Utils.copy(printerList), SetUtil.set(printer));
+  }
+
   public void printIndividualReport() {
 
     for (Iterator iterator_6 = printerList.iterator(); iterator_6.hasNext(); ) {
@@ -180,6 +185,11 @@ public class Network {
     IO.print(sumMoney);
     IO.print("\n");
     IO.print("\n");
+  }
+
+  public VDMSet getPrinterList() {
+
+    return this.printerList;
   }
 
   public String toString() {
