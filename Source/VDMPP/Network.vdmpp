@@ -14,12 +14,16 @@ operations
  		  return self;
  		);
 
-  -- Add a printer to the network, printer name must be unique
+  -- Add specified printer to the network, printer name must be unique
   public addPrinter: Printer ==> ()
     addPrinter(printer) == (
       printerList := printerList union {printer};
     )
     pre not exists p2 in set printerList & p2.getPrinterName() = printer.getPrinterName();
+
+  -- Remove specified printer from the network
+  public removePrinter: Printer ==> ()
+    removePrinter(printer) == printerList := printerList \ {printer};
 
   -- Prints the individual report of every printer in the network
   public printIndividualReport: () ==> ()
@@ -128,5 +132,10 @@ operations
       IO`print("\n");
       IO`print("\n");
     );
+
+-- GETTERS
+  -- Returns the printer list associated with the network
+  public getPrinterList: () ==> set of (Printer)
+    getPrinterList() == return self.printerList;
 
 end Network
