@@ -24,7 +24,8 @@ operations
       p1.addStatus("needBlackToner");
       assertEqual(p1.getStatus(),{"operational","needBlackToner"});
     );
-    
+   
+  -- Testing for Document class
   private testDocument: () ==> ()
   	testDocument() == (
   		dcl d: Document := new Document("nomeTeste", 5, '4', 'C');
@@ -36,7 +37,8 @@ operations
   		d.setPagesLeft(d.getNumPages() - 2);
   		assertEqual(d.getPagesLeft(),3);
   	);
-  	
+  
+  -- Testing for PrinterCapability class
   private testPrinterCapability: () ==> ()
   	testPrinterCapability() == (
   		dcl pCapabilityA4Color: PrinterCapability := new PrinterCapability(true,false,false,true);
@@ -51,7 +53,74 @@ operations
   		assertEqual(pCapabilityA3Black.getCanPrintA3(),true);
   		assertEqual(pCapabilityA3Black.getCanPrintBlack(),true);
   		assertEqual(pCapabilityA3Black.getCanPrintColor(),false);
-  	);		
+  	);
+  	
+  -- Testing for PrinterCapacity class
+	private testPrinterCapacity: () ==> ()
+  	testPrinterCapacity() == (
+  		dcl pCapacity: PrinterCapacity := new PrinterCapacity(7,8,9,10);
+  		
+			assertEqual(pCapacity.getMaxCapacityA4(),7);
+			assertEqual(pCapacity.getMaxCapacityA3(),8);
+			assertEqual(pCapacity.getMaxCapacityBlack(),9);
+			assertEqual(pCapacity.getMaxCapacityColor(),10);
+			
+			assertEqual(pCapacity.getMaxCapacityA4(),pCapacity.getNumOfSheetsA4());
+			assertEqual(pCapacity.getMaxCapacityA3(),pCapacity.getNumOfSheetsA3());
+			assertEqual(pCapacity.getMaxCapacityBlack(),pCapacity.getBlackPrintsLeft());
+			assertEqual(pCapacity.getMaxCapacityColor(),pCapacity.getColorPrintsLeft());
+			
+	    pCapacity.setNumOfSheetsA4(pCapacity.getNumOfSheetsA4() - 4);
+	    pCapacity.setNumOfSheetsA3(pCapacity.getNumOfSheetsA3() - 3);
+	    pCapacity.setBlackPrintsLeft(pCapacity.getBlackPrintsLeft() - 2);
+	    pCapacity.setColorPrintsLeft(pCapacity.getColorPrintsLeft() - 1);
+	    
+	    assertEqual(pCapacity.getNumOfSheetsA4(), 3);
+			assertEqual(pCapacity.getNumOfSheetsA3(), 5);
+			assertEqual(pCapacity.getBlackPrintsLeft(), 7);
+			assertEqual(pCapacity.getColorPrintsLeft(), 9);
+  	);
+
+	-- Testing for PrinterPricing class
+	private testPrinterPricing: () ==> ()
+  	testPrinterPricing() == (
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.6,0.7,0.8,0.9);
+	    assertEqual(pPricing.getPriceA4Black(),0.6);
+	    assertEqual(pPricing.getPriceA4Color(),0.7);
+	    assertEqual(pPricing.getPriceA3Black(),0.8);
+	    assertEqual(pPricing.getPriceA3Color(),0.9);
+  	);
+
+	-- Testing for PrinterReport class
+	private testPrinterReport: () ==> ()
+  	testPrinterReport() == (
+  		dcl pReport: PrinterReport := new PrinterReport();
+  		
+	    assertEqual(pReport.getBlackA4Printed(),0);
+	    assertEqual(pReport.getColorA4Printed(),0);
+	    assertEqual(pReport.getBlackA3Printed(),0);
+	    assertEqual(pReport.getColorA3Printed(),0);
+	    
+			pReport.addBlackA4(5);
+			pReport.addColorA4(6);
+			pReport.addBlackA3(7);
+			pReport.addColorA3(8);
+			
+			assertEqual(pReport.getBlackA4Printed(),5);
+	    assertEqual(pReport.getColorA4Printed(),6);
+	    assertEqual(pReport.getBlackA3Printed(),7);
+	    assertEqual(pReport.getColorA3Printed(),8);
+
+			pReport.addBlackA4(1);
+			pReport.addColorA4(2);
+			pReport.addBlackA3(3);
+			pReport.addColorA3(4);
+			
+			assertEqual(pReport.getBlackA4Printed(),6);
+	    assertEqual(pReport.getColorA4Printed(),8);
+	    assertEqual(pReport.getBlackA3Printed(),10);
+	    assertEqual(pReport.getColorA3Printed(),12);
+  	);
 
    -- Testing entry point, calls all the test functions in succession
    public static main: () ==> ()
@@ -59,7 +128,10 @@ operations
        dcl testSuite: PrinterTest := new PrinterTest();
        testSuite.testPrinterStatus();
        testSuite.testDocument();
-       testSuite.testPrinterCapability()
+       testSuite.testPrinterCapability();
+       testSuite.testPrinterCapacity();
+       testSuite.testPrinterPricing();
+       testSuite.testPrinterReport();
      );
 
 end PrinterTest
