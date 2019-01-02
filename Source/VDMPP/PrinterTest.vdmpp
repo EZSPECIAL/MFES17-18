@@ -8,11 +8,12 @@ operations
   -- Checks values are equal
 	private assertEqual: ? * ? ==> ()
 	  assertEqual(expected, actual) == return post expected = actual;
-
+	
+	-- Testing for PrinterStatus class
   private testPrinterStatus: () ==> ()
     testPrinterStatus() == (
       dcl p1: PrinterStatus := new PrinterStatus();
-       assertEqual(p1.getStatusT(),{"needA4", "needA3", "needBlackToner", "needColorToner", "needFixing", "operational"});
+      assertEqual(p1.getStatusT(),{"needA4", "needA3", "needBlackToner", "needColorToner", "needFixing", "operational"});
       p1.addStatus("needA4");
       p1.addStatus("needA3");
       p1.removeStatus("needA4");
@@ -23,12 +24,42 @@ operations
       p1.addStatus("needBlackToner");
       assertEqual(p1.getStatus(),{"operational","needBlackToner"});
     );
+    
+  private testDocument: () ==> ()
+  	testDocument() == (
+  		dcl d: Document := new Document("nomeTeste", 5, '4', 'C');
+  		assertEqual(d.getDocName(),"nomeTeste");
+  		assertEqual(d.getPageFormat(),'4');
+  		assertEqual(d.getPageToner(),'C');
+  		assertEqual(d.getNumPages(),d.getPagesLeft());
+  		assertEqual(d.getNumPages(),5);
+  		d.setPagesLeft(d.getNumPages() - 2);
+  		assertEqual(d.getPagesLeft(),3);
+  	);
+  	
+  private testPrinterCapability: () ==> ()
+  	testPrinterCapability() == (
+  		dcl pCapabilityA4Color: PrinterCapability := new PrinterCapability(true,false,false,true);
+  		dcl pCapabilityA3Black: PrinterCapability := new PrinterCapability(false,true,true,false);
+  		
+  		assertEqual(pCapabilityA4Color.getCanPrintA4(),true);
+  		assertEqual(pCapabilityA4Color.getCanPrintA3(),false);
+  		assertEqual(pCapabilityA4Color.getCanPrintBlack(),false);
+  		assertEqual(pCapabilityA4Color.getCanPrintColor(),true);
+  		
+  		assertEqual(pCapabilityA3Black.getCanPrintA4(),false);
+  		assertEqual(pCapabilityA3Black.getCanPrintA3(),true);
+  		assertEqual(pCapabilityA3Black.getCanPrintBlack(),true);
+  		assertEqual(pCapabilityA3Black.getCanPrintColor(),false);
+  	);		
 
    -- Testing entry point, calls all the test functions in succession
    public static main: () ==> ()
      main() == (
        dcl testSuite: PrinterTest := new PrinterTest();
        testSuite.testPrinterStatus();
+       testSuite.testDocument();
+       testSuite.testPrinterCapability()
      );
 
 end PrinterTest
