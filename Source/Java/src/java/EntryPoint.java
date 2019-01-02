@@ -8,9 +8,15 @@ import MFESTA.User;
 
 public class EntryPoint {
 
+	// Constants
+	private static final int numColumns = 3;
+	private static final String keyMsg = "Press Enter to continue...";
+
+	// Helper classes
 	private static MenuHandler menuHandler = new MenuHandler();
 	private static ObjectHandler objectHandler = new ObjectHandler();
-	
+
+	// VDM Objects
 	private static HashMap<String, User> users = new HashMap<String, User>();
 
 	public static void main(String[] args) {
@@ -24,7 +30,7 @@ public class EntryPoint {
 	private static void mainMenuLogic() {
 
 		while(true) {
-			
+
 			menuHandler.clrscr();
 			menuHandler.mainMenu();
 
@@ -37,24 +43,44 @@ public class EntryPoint {
 			}
 		}
 	}
-	
+
 	private static void userMenuLogic() {
+
+		boolean onMenu = true;
 		
-		menuHandler.clrscr();
-		menuHandler.userMenu();
-		
-		int intChoice = menuHandler.intRangeInput("Please input a number in range [1, 2]", 1, 2);
-		
-		switch(intChoice) {
-		case 1:
-			double initBalance = menuHandler.doubleGTInput("Please input an initial balance for this user (must be >= 0.0)", 0);
-			users.put("User" + users.size(), objectHandler.createUser(initBalance));
-			break;
-		case 2:
-			for(Map.Entry<String, User> entry : users.entrySet()) {
-				System.out.println(entry.getKey() + " - bal: " + entry.getValue().getBalance() + " | #docs: " + entry.getValue().getDocumentList().size());
+		while(onMenu) {
+
+			menuHandler.clrscr();
+			menuHandler.userMenu();
+
+			int intChoice = menuHandler.intRangeInput("Please input a number in range [1, 4]", 1, 4);
+
+			switch(intChoice) {
+			case 1:
+				double initBalance = menuHandler.doubleGTInput("Please input an initial balance for the user (must be >= 0.0)", 0);
+				users.put("User" + users.size(), objectHandler.createUser(initBalance));
+				break;
+			case 2:
+				if(users.size() == 0) {
+					System.out.println("No users created! Please create one before using this menu.");
+				} else {
+					menuHandler.prettyPrintUsers(users, numColumns);
+					menuHandler.waitOnKey(keyMsg);
+				}
+				break;
+			case 3:
+				if(users.size() == 0) {
+					System.out.println("No users created! Please create one before using this menu.");
+				} else {
+					menuHandler.prettyPrintUsers(users, numColumns);
+					int userChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (users.size() - 1) + "]", 0, users.size() - 1);
+					menuHandler.waitOnKey(keyMsg);
+				}
+				break;
+			case 4:
+				onMenu = false;
+				break;
 			}
-			break;
 		}
 	}
 }
