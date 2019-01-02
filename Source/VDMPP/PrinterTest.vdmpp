@@ -12,21 +12,22 @@ operations
   private testPrinterStatus: () ==> ()
     testPrinterStatus() == (
       dcl p1: PrinterStatus := new PrinterStatus();
-      -- dcl p2: PrinterStatus := new PrinterStatus({"operational","needBlackToner","needColorToner"});
-      -- dcl p3: PrinterStatus := new PrinterStatus({"needFixing"});
+       assertEqual(p1.getStatusT(),{"needA4", "needA3", "needBlackToner", "needColorToner", "needFixing", "operational"});
       p1.addStatus("needA4");
       p1.addStatus("needA3");
       p1.removeStatus("needA4");
       p1.removeStatus("needA3");
-      -- p2.removeStatus("needColorToner");
-      -- p2.removeStatus("needBlackToner");
+      p1.flipOperationalStatus();
+      assertEqual(p1.getStatus(),{"needFixing"});
+      p1.flipOperationalStatus();
+      p1.addStatus("needBlackToner");
+      assertEqual(p1.getStatus(),{"operational","needBlackToner"});
     );
 
    -- Testing entry point, calls all the test functions in succession
    public static main: () ==> ()
      main() == (
        dcl testSuite: PrinterTest := new PrinterTest();
-       
        testSuite.testPrinterStatus();
      );
 
