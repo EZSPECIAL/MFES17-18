@@ -2,4 +2,8 @@ addStatus() can break system -> postcondition on print() / break() / fix() fails
 
 VDM++ Tests
 JAVA Interface
+  - shortcuts?
+  - pagination?
+  - test on linux
+
 Report
