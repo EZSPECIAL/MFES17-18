@@ -1,9 +1,11 @@
 package MFESTA.java;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
+
+import org.overture.codegen.runtime.VDMSet;
 
 import MFESTA.Document;
 import MFESTA.User;
@@ -104,6 +106,29 @@ public class MenuHandler {
 	}
 
 	/**
+	 * Prints a message and waits on user to input an integer.
+	 * 
+	 * @param msg the message to print
+	 * @return the user selected integer
+	 */
+	public int intInput(String msg) {
+
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		int number = -1;
+		do {
+			System.out.println(msg);
+			while (!sc.hasNextInt()) {
+				System.out.println(msg);
+				sc.next();
+			}
+			number = sc.nextInt();
+		} while (number == -1);
+
+		return number;
+	}
+	
+	/**
 	 * Prints a message and waits on user to input an integer
 	 * between the two bounds.
 	 * 
@@ -180,12 +205,50 @@ public class MenuHandler {
 	}
 
 	/**
+	 * Prints all documents contained in the VDM set provided along with their name,
+	 * pages left to print / total pages, page format and toner requirement.
+	 * 
+	 * @param documentMap the map to print
+	 * @param documentSet the VDM set to print
+	 * @param numColumns the number of columns to use
+	 */
+	public void prettyPrintDocumentsSet(TreeMap<String, Document> documentMap, VDMSet documentSet, int numColumns) {
+		
+		int remaining = documentSet.size();
+		int columnCount = 1;
+
+		for(Map.Entry<String, Document> entry : documentMap.entrySet()) {
+			
+			if(!documentSet.contains(entry.getValue())) continue;
+			
+			if(remaining > 1 && columnCount != numColumns) {
+				System.out.print(entry.getKey() + " - name: " + entry.getValue().getDocName() +
+						" - pages: " + entry.getValue().getPagesLeft() + "/" + entry.getValue().getNumPages() +
+						" - format: " + entry.getValue().getPageFormat() + entry.getValue().getPageToner() + " | ");
+			} else {
+				System.out.print(entry.getKey() + " - name: " + entry.getValue().getDocName() +
+						" - pages: " + entry.getValue().getPagesLeft() + "/" + entry.getValue().getNumPages() +
+						" - format: " + entry.getValue().getPageFormat() + entry.getValue().getPageToner());
+			}
+
+			if(columnCount == numColumns && remaining > 0) {
+				System.out.println();
+				columnCount = 0;
+			}
+			columnCount++;
+			remaining--;
+		}
+
+		System.out.println();
+	}
+	
+	/**
 	 * Prints all users along with their balance and number of documents.
 	 * 
 	 * @param map the map to print
 	 * @param numColumns the number of columns to use
 	 */
-	public void prettyPrintUsers(HashMap<String, User> map, int numColumns) {
+	public void prettyPrintUsers(TreeMap<String, User> map, int numColumns) {
 
 		int remaining = map.size();
 		int columnCount = 1;
@@ -217,7 +280,7 @@ public class MenuHandler {
 	 * @param map the map to print
 	 * @param numColumns the number of columns to use
 	 */
-	public void prettyPrintDocuments(HashMap<String, Document> map, int numColumns) {
+	public void prettyPrintDocuments(TreeMap<String, Document> map, int numColumns) {
 
 		int remaining = map.size();
 		int columnCount = 1;
@@ -250,8 +313,8 @@ public class MenuHandler {
 	 * @param map the map to print
 	 * @param numColumns the number of columns to use
 	 */
-	public void prettyPrintMap(HashMap<String, ?> map, int numColumns) {
-
+	public void prettyPrintMap(TreeMap<String, ?> map, int numColumns) {
+		
 		int remaining = map.size();
 		int columnCount = 1;
 

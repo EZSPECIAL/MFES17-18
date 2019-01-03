@@ -1,15 +1,13 @@
 addStatus() can break system -> postcondition on print() / break() / fix() fails though
 
-reconvert VDM -> Java
-
 VDM++ Tests (document must have > 0 pages)
 JAVA Interface (test on linux)
 main menu
     user menu
         create user                                                     (done)
         list user (summary)                                             (done)
-        list user documents                                             (missing pretty print)
-        add document to user [document name unique inside same user]    (missing constraint)
+        list user documents                                             (done)
+        add document to user                                            (done)
         remove document from user
     document menu
         create document                                                 (done)
