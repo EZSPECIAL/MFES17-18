@@ -97,7 +97,14 @@ public class EntryPoint {
 				break;
 			case 3:
 				// Print document
-				printDocumentMenuLogic();
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					printDocumentMenuLogic();
+				}
 				break;
 			case 7:
 				onMenu = false;
@@ -107,7 +114,7 @@ public class EntryPoint {
 	}
 	
 	// TODO doc
-	private static void printDocumentMenuLogic() {
+	private static void printDocumentMenuLogic() { // TODO missing balance check
 
 		// Check users exist
 		if(users.size() == 0) {
@@ -145,17 +152,36 @@ public class EntryPoint {
 
 		Document toPrint = documents.get("Doc" + docChoice);
 
+		// Check printers available for the chosen document
+		TreeMap<String, Printer> availablePrinters = checkPrinterAvailability(toPrint);
+		
+		// No printer can print the chosen document
+		if(availablePrinters.size() == 0) {
+			menuHandler.waitOnKey(keyMsg);
+			return;
+		}
+		
+		// List available printers and await user input
+		menuHandler.prettyPrintPrinters(availablePrinters, 1);
+		
+		// Await valid printer input
+		int printerChoice;
+		do {
+			printerChoice = menuHandler.intInput("Please input a number seen above.");
+		} while(!availablePrinters.containsKey("Printer" + printerChoice));
+		
+		printers.get("Printer" + printerChoice).print(toPrint, users.get("User" + userChoice));
 	}
 	
 	// TODO doc
 	private static TreeMap<String, Printer> checkPrinterAvailability(Document doc) {
 		
-		int pagesLeft = (int) doc.getPagesLeft();
 		char format = doc.getPageFormat();
 		char toner = doc.getPageToner();
+			
+		TreeMap<String, Printer> capablePrinters = new TreeMap<String, Printer>();
 		
-		boolean atLeastOnePrinterCapability = false;
-		
+		// Check printers capable of printing specified document
 		for(Map.Entry<String, Printer> entry : printers.entrySet()) {
 			
 			Printer printer = entry.getValue();
@@ -173,22 +199,64 @@ public class EntryPoint {
 				neededCapabilityExists = printer.getPrinterCapabilities().getCanPrintA3() && printer.getPrinterCapabilities().getCanPrintColor();
 			}
 			
-			setBooleanTrueOnce(atLeastOnePrinterCapability, neededCapabilityExists);
-			
-			// TODO create temp map with capable printers
+			// Add printers capable of printing the specified document
+			if(neededCapabilityExists) capablePrinters.put(entry.getKey(), printer);
 		}
 		
-		// Check temp map
-		// Check printer has paper/toner left TODO
-		// Check printer is operational TODO
-	}
-	
-	// TODO doc
-	private static boolean setBooleanTrueOnce(boolean toSet, boolean shouldSet) {
+		// No capable printers found
+		if(capablePrinters.size() == 0) {
+			System.out.println("No printer can print the document format/toner combination! Please add a printer with the required capabilities.");
+			return new TreeMap<String, Printer>();
+		}
 		
-		if(toSet) return true;
-		else if(shouldSet) return true;
-		else return false;
+		boolean atLeastOnePaperTonerAvail = false;
+		boolean atLeastOneOperational = false;
+		
+		TreeMap<String, Printer> availablePrinters = new TreeMap<String, Printer>();
+		
+		// Check previous printers toner and paper levels as well as operational status
+		for(Map.Entry<String, Printer> entry : capablePrinters.entrySet()) {
+			
+			Printer printer = entry.getValue();
+			
+			boolean printerHasPaperToner = false;
+			
+			// Check printer for needed capabilities (paper/toner)
+			if(format == '4' && toner == 'B') {
+				printerHasPaperToner = printer.getPrinterCapacities().getNumOfSheetsA4().intValue() > 0 && printer.getPrinterCapacities().getBlackPrintsLeft().intValue() > 0;
+			} else if(format == '4' && toner == 'C') {
+				printerHasPaperToner = printer.getPrinterCapacities().getNumOfSheetsA4().intValue() > 0 && printer.getPrinterCapacities().getColorPrintsLeft().intValue() > 0;
+			} else if(format == '3' && toner == 'B') {
+				printerHasPaperToner = printer.getPrinterCapacities().getNumOfSheetsA3().intValue() > 0 && printer.getPrinterCapacities().getBlackPrintsLeft().intValue() > 0;
+			} else if(format == '3' && toner == 'C') {
+				printerHasPaperToner = printer.getPrinterCapacities().getNumOfSheetsA3().intValue() > 0 && printer.getPrinterCapacities().getColorPrintsLeft().intValue() > 0;
+			}
+			
+			// Does printer have enough paper/toner for at least 1 page of the document?
+			if(printerHasPaperToner) {
+				atLeastOnePaperTonerAvail = true;
+				
+				// Is the printer operational?
+				if(printer.getPrinterStatus().getStatus().contains("operational")) {
+					atLeastOneOperational = true;
+					availablePrinters.put(entry.getKey(), printer);
+				}
+			}
+		}
+		
+		// No capable printer has paper/toner left
+		if(!atLeastOnePaperTonerAvail) {
+			System.out.println("Printers that can print the document found but they're all out of paper/toner. Please use the refill menu.");
+			return new TreeMap<String, Printer>();
+		}
+		
+		// Printers found are all non operational
+		if(!atLeastOneOperational) {
+			System.out.println("Printers that can print the document found but they're all in need of fixing. Please use the fix menu.");
+			return new TreeMap<String, Printer>();
+		}
+		
+		return availablePrinters;
 	}
 	
 	// TODO doc

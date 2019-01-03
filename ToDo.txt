@@ -15,10 +15,12 @@ main menu
     printer menu
         create printer                                                      (done)
         list printers                                                       (done)
-        print document                                                      (check paper/toner levels / check operational / check user balance)
+        print document                                                      (check user balance)
         break/empty printer
         fix/refill printer
         report
     network menu
+
+document reference bug! (VDM: copy doc / Java: copy doc - user,doc map)
 
 Report
