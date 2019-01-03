@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import org.overture.codegen.runtime.VDMSet;
 
 import MFESTA.Document;
+import MFESTA.Printer;
 import MFESTA.User;
 
 public class MenuHandler {
@@ -79,8 +80,8 @@ public class MenuHandler {
 		System.out.println("1 - Create printer");
 		System.out.println("2 - List printers");
 		System.out.println("3 - Print document");
-		System.out.println("4 - Break printer");
-		System.out.println("5 - Fix printer");
+		System.out.println("4 - Break/empty printer");
+		System.out.println("5 - Fix/refill printer");
 		System.out.println("6 - Print report");
 		System.out.println("7 - Back to main menu");
 		
@@ -367,6 +368,90 @@ public class MenuHandler {
 		System.out.println();
 	}
 
+	// TODO doc
+	public void prettyPrintPrinters(TreeMap<String, Printer> map, int numColumns) {
+
+		int remaining = map.size();
+		int columnCount = 1;
+
+		for(Map.Entry<String, Printer> entry : map.entrySet()) {
+			if(remaining > 1 && columnCount != numColumns) {
+				System.out.print(entry.getKey() + " - name: " + entry.getValue().getPrinterName() +
+						" - capabilities: " + parsePrinterCapabilities(entry.getValue()) +
+						" - price: " + parsePrinterPricing(entry.getValue()) +
+						"- capacity: " + parsePrinterCapacity(entry.getValue()) +
+						"- status: " + parsePrinterStatus(entry.getValue()) + " | ");
+			} else {
+				System.out.print(entry.getKey() + " - name: " + entry.getValue().getPrinterName() +
+						" - capabilities: " + parsePrinterCapabilities(entry.getValue()) +
+						" - price: " + parsePrinterPricing(entry.getValue()) +
+						"- capacity: " + parsePrinterCapacity(entry.getValue()) +
+						" - status: " + parsePrinterStatus(entry.getValue()));
+			}
+
+			if(columnCount == numColumns && remaining > 0) {
+				System.out.println();
+				columnCount = 0;
+			}
+			columnCount++;
+			remaining--;
+		}
+
+		System.out.println();
+	}
+	
+	// TODO doc
+	private String parsePrinterCapabilities(Printer printer) {
+		
+		String capabilities = "";
+		if(printer.getPrinterCapabilities().getCanPrintA4()) capabilities += "4";
+		if(printer.getPrinterCapabilities().getCanPrintA3()) capabilities += "3";
+		if(printer.getPrinterCapabilities().getCanPrintBlack()) capabilities += "B";
+		if(printer.getPrinterCapabilities().getCanPrintColor()) capabilities += "C";
+		
+		return capabilities;
+	}
+	
+	// TODO doc
+	private String parsePrinterPricing(Printer printer) {
+		
+		String pricing = "";
+		if(printer.getPrinterCapabilities().getCanPrintA4() && printer.getPrinterCapabilities().getCanPrintBlack())
+			pricing += "4B: " + printer.getPrinterPricing().getPriceA4Black() + " ";
+		if(printer.getPrinterCapabilities().getCanPrintA4() && printer.getPrinterCapabilities().getCanPrintColor())
+			pricing += "4C: " + printer.getPrinterPricing().getPriceA4Color() + " ";
+		if(printer.getPrinterCapabilities().getCanPrintA3() && printer.getPrinterCapabilities().getCanPrintBlack())
+			pricing += "3B: " + printer.getPrinterPricing().getPriceA3Black() + " ";
+		if(printer.getPrinterCapabilities().getCanPrintA3() && printer.getPrinterCapabilities().getCanPrintColor())
+			pricing += "3C: " + printer.getPrinterPricing().getPriceA3Color() + " ";
+		
+		return pricing;
+	}
+	
+	// TODO doc
+	private String parsePrinterCapacity(Printer printer) {
+		
+		String capacities = "";
+		if(printer.getPrinterCapabilities().getCanPrintA4())
+			capacities += "A4: " + printer.getPrinterCapacities().getNumOfSheetsA4() + "/" + printer.getPrinterCapacities().getMaxCapacityA4() + " ";
+		if(printer.getPrinterCapabilities().getCanPrintA3())
+			capacities += "A3: " + printer.getPrinterCapacities().getNumOfSheetsA3() + "/" + printer.getPrinterCapacities().getMaxCapacityA3() + " ";
+		if(printer.getPrinterCapabilities().getCanPrintBlack())
+			capacities += "B: " + printer.getPrinterCapacities().getBlackPrintsLeft() + "/" + printer.getPrinterCapacities().getMaxCapacityBlack() + " ";
+		if(printer.getPrinterCapabilities().getCanPrintColor())
+			capacities += "C: " + printer.getPrinterCapacities().getColorPrintsLeft() + "/" + printer.getPrinterCapacities().getMaxCapacityColor() + " ";
+		
+		return capacities;
+	}
+	
+	// TODO doc
+	private String parsePrinterStatus(Printer printer) {
+		
+		if(printer.getPrinterStatus().getStatus().contains("operational")) return "operational";
+		if(printer.getPrinterStatus().getStatus().contains("needFixing")) return "needFixing";
+		return "";
+	}
+	
 	/**
 	 * Prints all the keys of a generic map.
 	 * 

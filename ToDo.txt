@@ -13,11 +13,11 @@ main menu
         create document                                                     (done)
         list documents                                                      (done)
     printer menu
-        create printer (pCapacity, pStatus)                                 (missing: capacity / status)
-        list printers
-        print document
-        break printer
-        fix printer
+        create printer                                                      (done)
+        list printers                                                       (done)
+        print document                                                      (check paper/toner levels / check operational / check user balance)
+        break/empty printer
+        fix/refill printer
         report
     network menu
 

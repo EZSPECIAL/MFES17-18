@@ -9,6 +9,7 @@ import org.overture.codegen.runtime.VDMSet;
 import MFESTA.Document;
 import MFESTA.Printer;
 import MFESTA.PrinterCapability;
+import MFESTA.PrinterCapacity;
 import MFESTA.PrinterPricing;
 import MFESTA.User;
 
@@ -33,6 +34,7 @@ public class EntryPoint {
 
 	public static void main(String[] args) {
 
+		if(args.length > 0) createTestData();
 		mainMenuLogic();
 	}
 
@@ -82,6 +84,21 @@ public class EntryPoint {
 				// Create printer
 				createPrinterMenuLogic();
 				break;
+			case 2:
+				// List printers
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+				} else {
+					menuHandler.prettyPrintPrinters(printers, 1);
+				}
+				menuHandler.waitOnKey(keyMsg);
+				break;
+			case 3:
+				// Print document
+				printDocumentMenuLogic();
+				break;
 			case 7:
 				onMenu = false;
 				break;
@@ -90,35 +107,119 @@ public class EntryPoint {
 	}
 	
 	// TODO doc
-	private static void createPrinterMenuLogic() {
-		
-		boolean onMenu = true;
+	private static void printDocumentMenuLogic() {
 
-		while(onMenu) {
-
-			menuHandler.clrscr();
-			
-			// Printer name
-			String printerName = menuHandler.inputString("Please input the printer name (cannot be empty)");
-			
-			// Printer paper format
-			System.out.println("Select printer paper format capabilities");
-			int maxChoice = menuHandler.printerFormatMenu();
-			int formatChoice = menuHandler.intRangeInput("Please input a number in range [1, " + maxChoice + "]", 1, maxChoice);
-			
-			// Printer toner
-			System.out.println("Select printer toner capabilities");
-			maxChoice = menuHandler.printerTonerMenu();
-			int tonerChoice = menuHandler.intRangeInput("Please input a number in range [1, " + maxChoice + "]", 1, maxChoice);
-			
-			// Parse user choices and create printer capabilities object
-			Boolean[] bools = parsePrinterCapabilities(formatChoice, tonerChoice);
-			PrinterCapability printerCapability = objectHandler.createPrinterCapability(bools[canPrintA4], bools[canPrintA3], bools[canPrintBlack], bools[canPrintColor]);
-			
-			// Ask user about pricing and create printer pricing object
-			PrinterPricing printerPricing = createPrinterPricing(bools);
-			
+		// Check users exist
+		if(users.size() == 0) {
+			System.out.println("No users created! Please create one before using this menu.");
+			menuHandler.waitOnKey(keyMsg);
+			return;
 		}
+
+		menuHandler.prettyPrintUsers(users, numColumns);
+		int userChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (users.size() - 1) + "]", 0, users.size() - 1);
+
+		VDMSet documentSet = users.get("User" + userChoice).getDocumentList();
+
+		// Check documents exist
+		if(documentSet.size() == 0) {
+			System.out.println("No documents available to print! Please add documents to the user before printing.");
+			menuHandler.waitOnKey(keyMsg);
+			return;
+		} 
+
+		// Find documents that are in the selected user's documents
+		TreeMap<String, Document> userDocuments = new TreeMap<String, Document>();
+		for(Map.Entry<String, Document> entry : documents.entrySet()) {
+
+			if(users.get("User" + userChoice).getDocumentList().contains(entry.getValue())) userDocuments.put(entry.getKey(), entry.getValue());
+		}
+
+		menuHandler.prettyPrintDocuments(userDocuments, numColumns);
+
+		// Await valid document input
+		int docChoice;
+		do {
+			docChoice = menuHandler.intInput("Please input a number seen above.");
+		} while(!userDocuments.containsKey("Doc" + docChoice));
+
+		Document toPrint = documents.get("Doc" + docChoice);
+
+	}
+	
+	// TODO doc
+	private static TreeMap<String, Printer> checkPrinterAvailability(Document doc) {
+		
+		int pagesLeft = (int) doc.getPagesLeft();
+		char format = doc.getPageFormat();
+		char toner = doc.getPageToner();
+		
+		boolean atLeastOnePrinterCapability = false;
+		
+		for(Map.Entry<String, Printer> entry : printers.entrySet()) {
+			
+			Printer printer = entry.getValue();
+			
+			boolean neededCapabilityExists = false;
+			
+			// Check printer for needed capabilities (paper/toner)
+			if(format == '4' && toner == 'B') {
+				neededCapabilityExists = printer.getPrinterCapabilities().getCanPrintA4() && printer.getPrinterCapabilities().getCanPrintBlack();
+			} else if(format == '4' && toner == 'C') {
+				neededCapabilityExists = printer.getPrinterCapabilities().getCanPrintA4() && printer.getPrinterCapabilities().getCanPrintColor();
+			} else if(format == '3' && toner == 'B') {
+				neededCapabilityExists = printer.getPrinterCapabilities().getCanPrintA3() && printer.getPrinterCapabilities().getCanPrintBlack();
+			} else if(format == '3' && toner == 'C') {
+				neededCapabilityExists = printer.getPrinterCapabilities().getCanPrintA3() && printer.getPrinterCapabilities().getCanPrintColor();
+			}
+			
+			setBooleanTrueOnce(atLeastOnePrinterCapability, neededCapabilityExists);
+			
+			// TODO create temp map with capable printers
+		}
+		
+		// Check temp map
+		// Check printer has paper/toner left TODO
+		// Check printer is operational TODO
+	}
+	
+	// TODO doc
+	private static boolean setBooleanTrueOnce(boolean toSet, boolean shouldSet) {
+		
+		if(toSet) return true;
+		else if(shouldSet) return true;
+		else return false;
+	}
+	
+	// TODO doc
+	private static void createPrinterMenuLogic() {
+
+		menuHandler.clrscr();
+
+		// Printer name
+		String printerName = menuHandler.inputString("Please input the printer name (cannot be empty)");
+
+		// Printer paper format
+		System.out.println("Select printer paper format capabilities");
+		int maxChoice = menuHandler.printerFormatMenu();
+		int formatChoice = menuHandler.intRangeInput("Please input a number in range [1, " + maxChoice + "]", 1, maxChoice);
+
+		// Printer toner
+		System.out.println("Select printer toner capabilities");
+		maxChoice = menuHandler.printerTonerMenu();
+		int tonerChoice = menuHandler.intRangeInput("Please input a number in range [1, " + maxChoice + "]", 1, maxChoice);
+
+		// Parse user choices and create printer capabilities object
+		Boolean[] bools = parsePrinterCapabilities(formatChoice, tonerChoice);
+		PrinterCapability printerCapability = objectHandler.createPrinterCapability(bools[canPrintA4], bools[canPrintA3], bools[canPrintBlack], bools[canPrintColor]);
+
+		// Ask user about pricing and create printer pricing object
+		PrinterPricing printerPricing = createPrinterPricing(bools);
+
+		// Ask user about capacity and create printer capacity object
+		PrinterCapacity printerCapacity = createPrinterCapacity(bools);
+
+		printers.put("Printer" + printers.size(), objectHandler.createPrinter(printerName, printerCapability, printerPricing, printerCapacity, objectHandler.createPrinterStatus()));
 	}
 	
 	// TODO doc
@@ -156,6 +257,39 @@ public class EntryPoint {
 		
 		Boolean[] bools = {printA4, printA3, printBlack, printColor};
 		return bools;
+	}
+	
+	// TODO doc
+	private static PrinterCapacity createPrinterCapacity(Boolean[] bools) {
+		
+		// Init all pricing to 0
+		int numA4, numA3, maxBlack, maxColor;
+		numA4 = 0;
+		numA3 = 0;
+		maxBlack = 0;
+		maxColor = 0;
+		
+		// Can print A4
+		if(bools[canPrintA4]) {
+			numA4 = menuHandler.intGTEInput("Please input A4 paper capacity (must be > 0)", 1);
+		}
+		
+		// Can print A3
+		if(bools[canPrintA4] && bools[canPrintColor]) {
+			numA3 = menuHandler.intGTEInput("Please input A3 paper capacity (must be > 0)", 1);
+		}
+		
+		// Can print Black
+		if(bools[canPrintA3] && bools[canPrintBlack]) {
+			maxBlack = menuHandler.intGTEInput("Please input black toner capacity (must be > 0)", 1);
+		}
+		
+		// Can print Color
+		if(bools[canPrintA3] && bools[canPrintColor]) {
+			maxColor = menuHandler.intGTEInput("Please input color toner capacity (must be > 0)", 1);
+		}
+		
+		return objectHandler.createPrinterCapacity(numA4, numA3, maxBlack, maxColor);
 	}
 	
 	// TODO doc
@@ -428,5 +562,35 @@ public class EntryPoint {
 				onMenu = false;
 			}
 		}
+	}
+	
+	// TODO doc
+	private static void createTestData() {
+		
+		users.put("User0", objectHandler.createUser(25.0));
+		users.put("User1", objectHandler.createUser(1.0));
+		
+		documents.put("Doc0", objectHandler.createDocument("mydoc", 25, '4', 'C'));
+		documents.put("Doc1", objectHandler.createDocument("another", 15, '3', 'B'));
+		
+		users.get("User0").addDocument(documents.get("Doc0"));
+		users.get("User0").addDocument(documents.get("Doc1"));
+		users.get("User1").addDocument(documents.get("Doc0"));
+		
+		PrinterCapability capability1 = objectHandler.createPrinterCapability(true, false, true, true);
+		PrinterCapability capability2 = objectHandler.createPrinterCapability(false, true, true, false);
+		
+		PrinterPricing pricing = objectHandler.createPrinterPricing(0.03, 0.14, 0.06, 0.24);
+		
+		PrinterCapacity capacity1 = objectHandler.createPrinterCapacity(25, 0, 10, 30);
+		PrinterCapacity capacity2 = objectHandler.createPrinterCapacity(0, 10, 15, 0);
+		
+		printers.put("Printer0", objectHandler.createPrinter("A4All", capability1, pricing, capacity1, objectHandler.createPrinterStatus()));
+		printers.put("Printer1", objectHandler.createPrinter("A3B", capability2, pricing, capacity2, objectHandler.createPrinterStatus()));
+		printers.put("Printer2", objectHandler.createPrinter("A3B-rip", capability2, pricing, capacity2, objectHandler.createPrinterStatus()));
+		
+		VDMSet status = new VDMSet();
+		status.add("needFixing");
+		printers.get("Printer2").break_(status);
 	}
 }

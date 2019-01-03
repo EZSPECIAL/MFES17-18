@@ -1,8 +1,11 @@
 package MFESTA.java;
 
 import MFESTA.Document;
+import MFESTA.Printer;
 import MFESTA.PrinterCapability;
+import MFESTA.PrinterCapacity;
 import MFESTA.PrinterPricing;
+import MFESTA.PrinterStatus;
 import MFESTA.User;
 
 public class ObjectHandler {
@@ -38,5 +41,20 @@ public class ObjectHandler {
 	// TODO doc
 	public PrinterPricing createPrinterPricing(double priceA4B, double priceA4C, double priceA3B, double priceA3C) {
 		return new PrinterPricing(priceA4B, priceA4C, priceA3B, priceA3C);
+	}
+	
+	// TODO doc
+	public PrinterCapacity createPrinterCapacity(int numA4, int numA3, int maxBlack, int maxColor) {
+		return new PrinterCapacity(numA4, numA3, maxBlack, maxColor);
+	}
+	
+	// TODO doc
+	public PrinterStatus createPrinterStatus() {
+		return new PrinterStatus();
+	}
+	
+	// TODO doc
+	public Printer createPrinter(String name, PrinterCapability capabilities, PrinterPricing pricing, PrinterCapacity capacities, PrinterStatus status) {
+		return new Printer(name, capabilities, pricing, capacities, status);
 	}
 }
