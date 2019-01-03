@@ -142,7 +142,6 @@ public class EntryPoint {
 					int docChoice;
 					do {
 						docChoice = menuHandler.intInput("Please input a number seen above.");
-					
 					} while(!userDocuments.containsKey("Doc" + docChoice));
 					
 					// Check if document name is already in user's documents
@@ -168,6 +167,44 @@ public class EntryPoint {
 				break;
 			case 5:
 				// Remove document from user
+				
+				// Check users exist
+				if(users.size() == 0) {
+					System.out.println("No users created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+					break;
+				} else {
+					menuHandler.prettyPrintUsers(users, numColumns);
+					userChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (users.size() - 1) + "]", 0, users.size() - 1);
+				}
+				
+				documentSet = users.get("User" + userChoice).getDocumentList();
+				
+				// Check documents exist
+				if(documentSet.size() == 0) {
+					System.out.println("No documents available to remove! Please add documents to the user before removing.");
+					menuHandler.waitOnKey(keyMsg);
+					break;
+				} else {
+					
+					// Find documents that are in the selected user's documents
+					TreeMap<String, Document> userDocuments = new TreeMap<String, Document>();
+					for(Map.Entry<String, Document> entry : documents.entrySet()) {
+						
+						if(users.get("User" + userChoice).getDocumentList().contains(entry.getValue())) userDocuments.put(entry.getKey(), entry.getValue());
+					}
+					
+					menuHandler.prettyPrintDocuments(userDocuments, numColumns);
+					
+					// Await valid document input
+					int docChoice;
+					do {
+						docChoice = menuHandler.intInput("Please input a number seen above.");
+					} while(!userDocuments.containsKey("Doc" + docChoice));
+	
+					// Remove document from user's document list
+					users.get("User" + userChoice).removeDocument(documents.get("Doc" + docChoice));
+				}
 				break;
 			case 6:
 				onMenu = false;
