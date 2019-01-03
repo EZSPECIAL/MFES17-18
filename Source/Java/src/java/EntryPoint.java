@@ -106,7 +106,54 @@ public class EntryPoint {
 					printDocumentMenuLogic();
 				}
 				break;
+			case 4:
+				// Break/empty printer
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					breakPrinterMenuLogic();
+				}
+				break;
+			case 5:
+				// Break all
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					
+					menuHandler.prettyPrintPrinters(printers, 1);
+					int printerChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (printers.size() - 1) + "]", 0, printers.size() - 1);
+
+					printers.get("Printer" + printerChoice).breakAll();
+				}
+				break;
+			case 6:
+				// Fix/refill printer TODO
+				break;
 			case 7:
+				// Fix all
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					
+					menuHandler.prettyPrintPrinters(printers, 1);
+					int printerChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (printers.size() - 1) + "]", 0, printers.size() - 1);
+
+					printers.get("Printer" + printerChoice).fixAll();
+				}
+				break;
+			case 8:
+				// Print report TODO
+				break;
+			case 9:
 				onMenu = false;
 				break;
 			}
@@ -114,7 +161,40 @@ public class EntryPoint {
 	}
 	
 	// TODO doc
-	private static void printDocumentMenuLogic() { // TODO missing balance check
+	private static void breakPrinterMenuLogic() {
+		
+		menuHandler.prettyPrintPrinters(printers, 1);
+		int printerChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (printers.size() - 1) + "]", 0, printers.size() - 1);
+
+		Printer printer = printers.get("Printer" + printerChoice);
+		VDMSet breakSet = new VDMSet();
+		
+		// Ask what to break for each of the printer's capabilities
+		if(printer.getPrinterCapabilities().getCanPrintA4()) {
+			if(menuHandler.inputYesNo("Empty A4 paper stock? [y/n]")) breakSet.add("needA4");
+		}
+		
+		if(printer.getPrinterCapabilities().getCanPrintA3()) {
+			if(menuHandler.inputYesNo("Empty A3 paper stock? [y/n]")) breakSet.add("needA3");
+		}
+		
+		if(printer.getPrinterCapabilities().getCanPrintBlack()) {
+			if(menuHandler.inputYesNo("Empty black toner stock? [y/n]")) breakSet.add("needBlackToner");
+		}
+		
+		if(printer.getPrinterCapabilities().getCanPrintColor()) {
+			if(menuHandler.inputYesNo("Empty color toner stock? [y/n]")) breakSet.add("needColorToner");
+		}
+		
+		if(printer.getPrinterStatus().getStatus().contains("operational")) {
+			if(menuHandler.inputYesNo("Create malfunction in printer? [y/n]")) breakSet.add("needFixing");
+		}
+		
+		printer.break_(breakSet);
+	}
+	
+	// TODO doc
+	private static void printDocumentMenuLogic() {
 
 		// Check users exist
 		if(users.size() == 0) {
@@ -170,7 +250,44 @@ public class EntryPoint {
 			printerChoice = menuHandler.intInput("Please input a number seen above.");
 		} while(!availablePrinters.containsKey("Printer" + printerChoice));
 		
+		// Check user balance
+		double totalCost = checkUserBalance(users.get("User" + userChoice), toPrint, printers.get("Printer" + printerChoice));
+		if(totalCost != 0) {
+			System.out.println("Not enough balance to print, needed: " + totalCost);
+			menuHandler.waitOnKey(keyMsg);
+			return;
+		}
+		
 		printers.get("Printer" + printerChoice).print(toPrint, users.get("User" + userChoice));
+	}
+	
+	// TODO doc
+	private static double checkUserBalance(User user, Document doc, Printer printer) {
+		
+		double balance = user.getBalance().doubleValue();
+		int pagesToPrint = printer.numPagesToPrint(doc).intValue();
+		
+		char format = doc.getPageFormat();
+		char toner = doc.getPageToner();
+
+		double pricing = 0.0;
+
+		// Get printer pricing
+		if(format == '4' && toner == 'B') {
+			pricing = printer.getPrinterPricing().getPriceA4Black().doubleValue();
+		} else if(format == '4' && toner == 'C') {
+			pricing = printer.getPrinterPricing().getPriceA4Color().doubleValue();
+		} else if(format == '3' && toner == 'B') {
+			pricing = printer.getPrinterPricing().getPriceA3Black().doubleValue();
+		} else if(format == '3' && toner == 'C') {
+			pricing = printer.getPrinterPricing().getPriceA3Color().doubleValue();
+		}
+		
+		// Calc total cost
+		double totalCost = pricing * pagesToPrint;
+		
+		if(balance >= totalCost) return 0;
+		else return totalCost;
 	}
 	
 	// TODO doc
@@ -647,15 +764,17 @@ public class EntryPoint {
 		
 		PrinterCapability capability1 = objectHandler.createPrinterCapability(true, false, true, true);
 		PrinterCapability capability2 = objectHandler.createPrinterCapability(false, true, true, false);
+		PrinterCapability capability3 = objectHandler.createPrinterCapability(false, true, true, false);
 		
 		PrinterPricing pricing = objectHandler.createPrinterPricing(0.03, 0.14, 0.06, 0.24);
 		
 		PrinterCapacity capacity1 = objectHandler.createPrinterCapacity(25, 0, 10, 30);
 		PrinterCapacity capacity2 = objectHandler.createPrinterCapacity(0, 10, 15, 0);
+		PrinterCapacity capacity3 = objectHandler.createPrinterCapacity(0, 10, 15, 0);
 		
 		printers.put("Printer0", objectHandler.createPrinter("A4All", capability1, pricing, capacity1, objectHandler.createPrinterStatus()));
 		printers.put("Printer1", objectHandler.createPrinter("A3B", capability2, pricing, capacity2, objectHandler.createPrinterStatus()));
-		printers.put("Printer2", objectHandler.createPrinter("A3B-rip", capability2, pricing, capacity2, objectHandler.createPrinterStatus()));
+		printers.put("Printer2", objectHandler.createPrinter("A3B-rip", capability3, pricing, capacity3, objectHandler.createPrinterStatus()));
 		
 		VDMSet status = new VDMSet();
 		status.add("needFixing");

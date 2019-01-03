@@ -6,21 +6,25 @@ main menu
     user menu
         create user                                                         (done)
         list user (summary)                                                 (done)
-        list user documents                                                 (done)
-        add document to user                                                (done)
-        remove document from user
+        add balance to user
+        list user documents                                                 (done - bug)
+        add document to user                                                (done - bug)
+        remove document from user                                           (done - bug)
     document menu
         create document                                                     (done)
-        list documents                                                      (done)
+        list documents                                                      (done - bug)
     printer menu
         create printer                                                      (done)
         list printers                                                       (done)
-        print document                                                      (check user balance)
-        break/empty printer
+        print document                                                      (done)
+        break/empty printer                                                 (done)
+        breakAll                                                            (done)
         fix/refill printer
+        fixAll                                                              (done)
         report
     network menu
 
 document reference bug! (VDM: copy doc / Java: copy doc - user,doc map)
+check all VDM functions for Java equivalent
 
 Report

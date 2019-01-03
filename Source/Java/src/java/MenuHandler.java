@@ -1,6 +1,7 @@
 package MFESTA.java;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -13,6 +14,13 @@ import MFESTA.User;
 
 public class MenuHandler {
 
+	private static final ArrayList<String> yesNoChoices = new ArrayList<String>() {{
+		add("yes");
+		add("no");
+		add("y");
+		add("n");
+	}};
+	
 	/**
 	 * Prints the main menu.
 	 * 
@@ -81,11 +89,13 @@ public class MenuHandler {
 		System.out.println("2 - List printers");
 		System.out.println("3 - Print document");
 		System.out.println("4 - Break/empty printer");
-		System.out.println("5 - Fix/refill printer");
-		System.out.println("6 - Print report");
-		System.out.println("7 - Back to main menu");
+		System.out.println("5 - Break all");
+		System.out.println("6 - Fix/refill printer");
+		System.out.println("7 - Fix all");
+		System.out.println("8 - Print report");
+		System.out.println("9 - Back to main menu");
 		
-		return 7;
+		return 9;
 	}
 	
 	// TODO doc
@@ -121,6 +131,22 @@ public class MenuHandler {
 		sc.nextLine();
 	}
 
+	// TODO doc
+	public boolean inputYesNo(String msg) {
+
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		
+		String input;
+		do {
+			System.out.println(msg);
+			input = sc.nextLine();
+		} while(!yesNoChoices.contains(input));
+
+		if(input.equals("no") || input.equals("n")) return false;
+		else return true;
+	}
+	
 	/**
 	 * Prints a message and waits on the user to input a string.
 	 * 
