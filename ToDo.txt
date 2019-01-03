@@ -1,16 +1,24 @@
 addStatus() can break system -> postcondition on print() / break() / fix() fails though
 
 VDM++ Tests (document must have > 0 pages)
-JAVA Interface (test on linux)
+JAVA Interface (test on linux / memorize selection? / refactor?)
 main menu
     user menu
-        create user                                                     (done)
-        list user (summary)                                             (done)
-        list user documents                                             (done)
-        add document to user                                            (done)
+        create user                                                         (done)
+        list user (summary)                                                 (done)
+        list user documents                                                 (done)
+        add document to user                                                (done)
         remove document from user
     document menu
-        create document                                                 (done)
-        list documents                                                  (done)
+        create document                                                     (done)
+        list documents                                                      (done)
+    printer menu
+        create printer (pCapacity, pStatus)                                 (missing: capacity / status)
+        list printers
+        print document
+        break printer
+        fix printer
+        report
+    network menu
 
 Report

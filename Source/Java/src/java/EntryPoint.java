@@ -7,11 +7,18 @@ import java.util.TreeMap;
 import org.overture.codegen.runtime.VDMSet;
 
 import MFESTA.Document;
+import MFESTA.Printer;
+import MFESTA.PrinterCapability;
+import MFESTA.PrinterPricing;
 import MFESTA.User;
 
 public class EntryPoint {
 
 	// Constants
+	private static final int canPrintA4 = 0;
+	private static final int canPrintA3 = 1;
+	private static final int canPrintBlack = 2;
+	private static final int canPrintColor = 3;
 	private static final int numColumns = 3;
 	private static final String keyMsg = "Press Enter to continue...";
 
@@ -22,13 +29,16 @@ public class EntryPoint {
 	// VDM Objects
 	private static TreeMap<String, User> users = new TreeMap<String, User>();
 	private static TreeMap<String, Document> documents = new TreeMap<String, Document>();
+	private static TreeMap<String, Printer> printers = new TreeMap<String, Printer>();
 
 	public static void main(String[] args) {
 
 		mainMenuLogic();
 	}
 
-	// TODO doc
+	/**
+	 * Handles main menu options.
+	 */
 	private static void mainMenuLogic() {
 
 		while(true) {
@@ -47,11 +57,143 @@ public class EntryPoint {
 				// Document menu
 				documentMenuLogic();
 				break;
+			case 3:
+				// Printer menu
+				printerMenuLogic();
+				break;
 			}
 		}
 	}
 
 	// TODO doc
+	private static void printerMenuLogic() {
+		
+		boolean onMenu = true;
+
+		while(onMenu) {
+
+			menuHandler.clrscr();
+			int maxChoice = menuHandler.printerMenu();
+
+			int intChoice = menuHandler.intRangeInput("Please input a number in range [1, " + maxChoice + "]", 1, maxChoice);
+
+			switch(intChoice) {
+			case 1:
+				// Create printer
+				createPrinterMenuLogic();
+				break;
+			case 7:
+				onMenu = false;
+				break;
+			}
+		}
+	}
+	
+	// TODO doc
+	private static void createPrinterMenuLogic() {
+		
+		boolean onMenu = true;
+
+		while(onMenu) {
+
+			menuHandler.clrscr();
+			
+			// Printer name
+			String printerName = menuHandler.inputString("Please input the printer name (cannot be empty)");
+			
+			// Printer paper format
+			System.out.println("Select printer paper format capabilities");
+			int maxChoice = menuHandler.printerFormatMenu();
+			int formatChoice = menuHandler.intRangeInput("Please input a number in range [1, " + maxChoice + "]", 1, maxChoice);
+			
+			// Printer toner
+			System.out.println("Select printer toner capabilities");
+			maxChoice = menuHandler.printerTonerMenu();
+			int tonerChoice = menuHandler.intRangeInput("Please input a number in range [1, " + maxChoice + "]", 1, maxChoice);
+			
+			// Parse user choices and create printer capabilities object
+			Boolean[] bools = parsePrinterCapabilities(formatChoice, tonerChoice);
+			PrinterCapability printerCapability = objectHandler.createPrinterCapability(bools[canPrintA4], bools[canPrintA3], bools[canPrintBlack], bools[canPrintColor]);
+			
+			// Ask user about pricing and create printer pricing object
+			PrinterPricing printerPricing = createPrinterPricing(bools);
+			
+		}
+	}
+	
+	// TODO doc
+	private static Boolean[] parsePrinterCapabilities(int formatChoice, int tonerChoice) {
+
+		boolean printA4, printA3, printBlack, printColor;
+		
+		// A4 only
+		if(formatChoice == 1) {
+			printA4 = true;
+			printA3 = false;
+		// A3 only
+		} else if(formatChoice == 2) {
+			printA4 = false;
+			printA3 = true;
+		// A4 and A3
+		} else {
+			printA4 = true;
+			printA3 = true;
+		}
+		
+		// Black only
+		if(tonerChoice == 1) {
+			printBlack = true;
+			printColor = false;
+		// Color only
+		} else if(tonerChoice == 2) {
+			printBlack = false;
+			printColor = true;
+		// Black and Color
+		} else {
+			printBlack = true;
+			printColor = true;
+		}
+		
+		Boolean[] bools = {printA4, printA3, printBlack, printColor};
+		return bools;
+	}
+	
+	// TODO doc
+	private static PrinterPricing createPrinterPricing(Boolean[] bools) {
+		
+		// Init all pricing to 0
+		double priceA4B, priceA4C, priceA3B, priceA3C;
+		priceA4B = 0.0;
+		priceA4C = 0.0;
+		priceA3B = 0.0;
+		priceA3C = 0.0;
+		
+		// Can print A4 Black
+		if(bools[canPrintA4] && bools[canPrintBlack]) {
+			priceA4B = menuHandler.doubleGTInput("Please input A4 black per page price (must be > 0.0)", 0);
+		}
+		
+		// Can print A4 Color
+		if(bools[canPrintA4] && bools[canPrintColor]) {
+			priceA4C = menuHandler.doubleGTInput("Please input A4 color per page price (must be > 0.0)", 0);
+		}
+		
+		// Can print A3 Black
+		if(bools[canPrintA3] && bools[canPrintBlack]) {
+			priceA3B = menuHandler.doubleGTInput("Please input A3 black per page price (must be > 0.0)", 0);
+		}
+		
+		// Can print A3 Color
+		if(bools[canPrintA3] && bools[canPrintColor]) {
+			priceA3C = menuHandler.doubleGTInput("Please input A3 color per page price (must be > 0.0)", 0);
+		}
+		
+		return objectHandler.createPrinterPricing(priceA4B, priceA4C, priceA3B, priceA3C);
+	}
+	
+	/**
+	 * Handles user management menu options. 
+	 */
 	private static void userMenuLogic() {
 
 		boolean onMenu = true;

@@ -21,8 +21,9 @@ public class MenuHandler {
 
 		System.out.println("1 - User menu");
 		System.out.println("2 - Document menu");
+		System.out.println("3 - Printer menu");
 
-		return 2;
+		return 3;
 	}
 
 	/**
@@ -72,6 +73,40 @@ public class MenuHandler {
 		return 5;
 	}
 
+	// TODO doc
+	public int printerMenu() {
+		
+		System.out.println("1 - Create printer");
+		System.out.println("2 - List printers");
+		System.out.println("3 - Print document");
+		System.out.println("4 - Break printer");
+		System.out.println("5 - Fix printer");
+		System.out.println("6 - Print report");
+		System.out.println("7 - Back to main menu");
+		
+		return 7;
+	}
+	
+	// TODO doc
+	public int printerFormatMenu() {
+		
+		System.out.println("1 - A4");
+		System.out.println("2 - A3");
+		System.out.println("3 - A4/A3");
+		
+		return 3;
+	}
+	
+	// TODO doc
+	public int printerTonerMenu() {
+		
+		System.out.println("1 - Black");
+		System.out.println("2 - Color");
+		System.out.println("3 - Black/Color");
+		
+		return 3;
+	}
+	
 	/**
 	 * Shows the specified message and waits on ENTER key input.
 	 * 
@@ -179,6 +214,31 @@ public class MenuHandler {
 		return number;
 	}
 
+	/**
+	 * Prints a message and waits on user to input a double
+	 * greater than the bound.
+	 * 
+	 * @param msg the message to print
+	 * @param low the lower bound
+	 * @return the user selected double
+	 */
+	public double doubleGTInput(String msg, double low) {
+
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		double number;
+		do {
+			System.out.println(msg);
+			while (!sc.hasNextDouble()) {
+				System.out.println(msg);
+				sc.next();
+			}
+			number = sc.nextDouble();
+		} while (number <= low);
+
+		return number;
+	}
+	
 	/**
 	 * Prints a message and waits on user to input a double
 	 * greater or equal to the bound.
