@@ -29,12 +29,11 @@ public class MenuHandler {
 	public int mainMenu() {
 
 		System.out.println("1 - User menu");
-		System.out.println("2 - Document menu");
-		System.out.println("3 - Printer menu");
-		System.out.println("4 - Network menu");
-		System.out.println("5 - Quit");
+		System.out.println("2 - Printer menu");
+		System.out.println("3 - Network menu");
+		System.out.println("4 - Quit");
 
-		return 5;
+		return 4;
 	}
 
 	/**
@@ -49,10 +48,9 @@ public class MenuHandler {
 		System.out.println("3 - Add balance to user");
 		System.out.println("4 - List user documents");
 		System.out.println("5 - Add a document to a user");
-		System.out.println("6 - Remove a document from a user");
-		System.out.println("7 - Back to main menu");
+		System.out.println("6 - Back to main menu");
 
-		return 7;
+		return 6;
 	}
 
 	/**
@@ -80,7 +78,7 @@ public class MenuHandler {
 		System.out.println("2 - A4 Color");
 		System.out.println("3 - A3 Black");
 		System.out.println("4 - A3 Color");
-		System.out.println("5 - Back to document menu");
+		System.out.println("5 - Back to user menu");
 
 		return 5;
 	}

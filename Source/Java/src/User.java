@@ -21,6 +21,7 @@ public class User {
 
   public void addDocument(final Document doc) {
 
+    doc.setPagesLeft(doc.getNumPages());
     documentList = SetUtil.union(Utils.copy(documentList), SetUtil.set(doc));
   }
 

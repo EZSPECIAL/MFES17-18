@@ -620,10 +620,10 @@ public class Printer {
 
   public void printIndividualReport() {
 
-    IO.print("Name: ");
-    IO.print(this.printerName);
-    IO.print("\n");
-    IO.print("Number of A4 Black pages printed: ");
+    System.out.print("Name: ");
+    System.out.print(this.printerName);
+    System.out.print("\n");
+    System.out.print("Number of A4 Black pages printed: ");
     Boolean andResult_42 = false;
 
     if (printerCapabilities.getCanPrintA4()) {
@@ -633,13 +633,13 @@ public class Printer {
     }
 
     if (andResult_42) {
-      IO.print(printerReport.getBlackA4Printed());
+      System.out.print(printerReport.getBlackA4Printed());
     } else {
-      IO.print("N/A");
+      System.out.print("N/A");
     }
 
-    IO.print("\n");
-    IO.print("Number of A4 Color pages printed: ");
+    System.out.print("\n");
+    System.out.print("Number of A4 Color pages printed: ");
     Boolean andResult_43 = false;
 
     if (printerCapabilities.getCanPrintA4()) {
@@ -649,13 +649,13 @@ public class Printer {
     }
 
     if (andResult_43) {
-      IO.print(printerReport.getColorA4Printed());
+      System.out.print(printerReport.getColorA4Printed());
     } else {
-      IO.print("N/A");
+      System.out.print("N/A");
     }
 
-    IO.print("\n");
-    IO.print("Number of A3 Black pages printed: ");
+    System.out.print("\n");
+    System.out.print("Number of A3 Black pages printed: ");
     Boolean andResult_44 = false;
 
     if (printerCapabilities.getCanPrintA3()) {
@@ -665,13 +665,13 @@ public class Printer {
     }
 
     if (andResult_44) {
-      IO.print(printerReport.getBlackA3Printed());
+      System.out.print(printerReport.getBlackA3Printed());
     } else {
-      IO.print("N/A");
+      System.out.print("N/A");
     }
 
-    IO.print("\n");
-    IO.print("Number of A3 Color pages printed: ");
+    System.out.print("\n");
+    System.out.print("Number of A3 Color pages printed: ");
     Boolean andResult_45 = false;
 
     if (printerCapabilities.getCanPrintA3()) {
@@ -681,16 +681,16 @@ public class Printer {
     }
 
     if (andResult_45) {
-      IO.print(printerReport.getColorA3Printed());
+      System.out.print(printerReport.getColorA3Printed());
     } else {
-      IO.print("N/A");
+      System.out.print("N/A");
     }
 
-    IO.print("\n");
-    IO.print("Total pages printed: ");
-    IO.print(sumTotalPagesPrinted());
-    IO.print("\n");
-    IO.print("Money from printing A4 Black: ");
+    System.out.print("\n");
+    System.out.print("Total pages printed: ");
+    System.out.print(sumTotalPagesPrinted());
+    System.out.print("\n");
+    System.out.print("Money from printing A4 Black: ");
     Boolean andResult_46 = false;
 
     if (printerCapabilities.getCanPrintA4()) {
@@ -700,15 +700,15 @@ public class Printer {
     }
 
     if (andResult_46) {
-      IO.print(
+      System.out.print(
           printerPricing.getPriceA4Black().doubleValue()
               * printerReport.getBlackA4Printed().longValue());
     } else {
-      IO.print("N/A");
+      System.out.print("N/A");
     }
 
-    IO.print("\n");
-    IO.print("Money from printing A4 Color: ");
+    System.out.print("\n");
+    System.out.print("Money from printing A4 Color: ");
     Boolean andResult_47 = false;
 
     if (printerCapabilities.getCanPrintA4()) {
@@ -718,15 +718,15 @@ public class Printer {
     }
 
     if (andResult_47) {
-      IO.print(
+      System.out.print(
           printerPricing.getPriceA4Color().doubleValue()
               * printerReport.getColorA4Printed().longValue());
     } else {
-      IO.print("N/A");
+      System.out.print("N/A");
     }
 
-    IO.print("\n");
-    IO.print("Money from printing A3 Black: ");
+    System.out.print("\n");
+    System.out.print("Money from printing A3 Black: ");
     Boolean andResult_48 = false;
 
     if (printerCapabilities.getCanPrintA3()) {
@@ -736,15 +736,15 @@ public class Printer {
     }
 
     if (andResult_48) {
-      IO.print(
+      System.out.print(
           printerPricing.getPriceA3Black().doubleValue()
               * printerReport.getBlackA3Printed().longValue());
     } else {
-      IO.print("N/A");
+      System.out.print("N/A");
     }
 
-    IO.print("\n");
-    IO.print("Money from printing A3 Color: ");
+    System.out.print("\n");
+    System.out.print("Money from printing A3 Color: ");
     Boolean andResult_49 = false;
 
     if (printerCapabilities.getCanPrintA3()) {
@@ -754,18 +754,18 @@ public class Printer {
     }
 
     if (andResult_49) {
-      IO.print(
+      System.out.print(
           printerPricing.getPriceA3Color().doubleValue()
               * printerReport.getColorA3Printed().longValue());
     } else {
-      IO.print("N/A");
+      System.out.print("N/A");
     }
 
-    IO.print("\n");
-    IO.print("Total money: ");
-    IO.print(sumTotalMoneyReceived());
-    IO.print("\n");
-    IO.print("\n");
+    System.out.print("\n");
+    System.out.print("Total money: ");
+    System.out.print(sumTotalMoneyReceived());
+    System.out.print("\n");
+    System.out.print("\n");
   }
 
   public Number sumTotalPagesPrinted() {

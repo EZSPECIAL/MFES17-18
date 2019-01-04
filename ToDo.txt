@@ -1,17 +1,11 @@
 addStatus() can break system -> postcondition on print() / break() / fix() fails though
 
-VDM++ Tests
-
 user menu
     create user                                                         (done)
     list user (summary)                                                 (done)
     add balance to user                                                 (done)
-    list user documents                                                 (done - bug)
-    add document to user                                                (done - bug)
-    remove document from user                                           (done - bug)
-document menu
-    create document                                                     (done)
-    list documents                                                      (done - bug)
+    list user documents                                                 (done)
+    add document to user                                                (done)
 printer menu
     create printer                                                      (done)
     list printers                                                       (done)
@@ -28,11 +22,9 @@ network menu
     print individual reports                                            (done)
     print global report                                                 (done)
 
-Tests:      document pages > 0
-VDM/Java:   document reference bug! (VDM: copy doc / Java: copy doc - user,doc map)
-VDM/Java:   check all VDM functions for Java equivalent
 Java:       convert IO.print to sysout
 Java:       test on linux
-Java:       refactor?
+Java:       refactor / memorize selection (FUTURE WORK)
 
+VDM++ Tests (document pages > 0 / others)
 Report
