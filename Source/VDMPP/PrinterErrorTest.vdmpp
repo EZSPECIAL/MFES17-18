@@ -282,6 +282,21 @@ operations
   		printer.print(doc1,user);
   	);
   	
+  -- Fails because the printer doesnt have the capability of the status
+  private testPrinterStatusInCapabilities: () ==> ()
+  	testPrinterStatusInCapabilities() == (
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.5,0.8,0.6,1);
+	  	dcl pCapacity: PrinterCapacity := new PrinterCapacity(20,0,25,0);
+	  	dcl pCapability: PrinterCapability := new PrinterCapability(true,false,true,false);
+	  	dcl pStatus: PrinterStatus := new PrinterStatus();
+  		dcl printer: Printer := new Printer("testPrinterName", pCapability, pPricing, pCapacity, pStatus);
+ 
+  		printer.break({"needA4", "needBlackToner", "needColorToner"});
+  		printer.break({"needA3"});
+  		IO`println(printer.getPrinterStatus().getStatus());
+  		IO`println(printer.getPrinterCapabilities());
+  	);
+  	
   	
   	
 	 --all of these tests should fail, test one at a time
@@ -320,7 +335,8 @@ operations
 			--testSuite.testPrinterTonerNotInCapabilities();
 			--testSuite.testPrinterNoTonerLeft();
 			--testSuite.testPrinterNoPagesLeft();
-			testSuite.testPrinterNotOperational();
+			--testSuite.testPrinterNotOperational();
+			testSuite.testPrinterStatusInCapabilities();
      );
 
 
