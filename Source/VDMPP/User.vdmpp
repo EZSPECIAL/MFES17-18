@@ -17,6 +17,7 @@ operations
   -- Adds the specified document to the user's document list
   public addDocument: Document ==> ()
     addDocument(doc) == (
+    	doc.setPagesLeft(doc.getNumPages());
       documentList := documentList union {doc};
     )
     pre forall d in set documentList & doc.getDocName() <> d.getDocName();
