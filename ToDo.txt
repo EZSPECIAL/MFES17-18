@@ -25,5 +25,5 @@ network menu
 REMEMBER:   test on linux / convert IO.print to sysout
 Java:       refactor / memorize selection (FUTURE WORK)
 
-VDM++ Tests (document pages > 0 / others)
+VDM++ Tests
 Report
