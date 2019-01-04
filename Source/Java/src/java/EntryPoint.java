@@ -155,7 +155,34 @@ public class EntryPoint {
 				}
 				break;
 			case 3:
-				// Remove printer TODO
+				// Remove printer
+				
+				// Check network has printers
+				printerSet = network.getPrinterList();
+				if(printerSet.size() == 0) {
+					System.out.println("Network has no printers! Please add printers before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+					break;
+				}			
+				
+				TreeMap<String, Printer> availablePrinters = new TreeMap<String, Printer>();
+				
+				// Check which printers are in the network
+				for(Map.Entry<String, Printer> entry : printers.entrySet()) {
+					if(network.getPrinterList().contains(entry.getValue())) availablePrinters.put(entry.getKey(), entry.getValue());
+				}
+				
+				menuHandler.prettyPrintPrinters(availablePrinters, 1);
+				
+				// Await valid printer input
+				int printerChoice;
+				do {
+					printerChoice = menuHandler.intInput("Please input a number seen above.");
+				} while(!availablePrinters.containsKey("Printer" + printerChoice));
+				
+				// Remove printer from network
+				network.removePrinter(printers.get("Printer" + printerChoice));
+				
 				break;
 			case 4:
 				// Print individual reports
@@ -714,6 +741,25 @@ public class EntryPoint {
 				menuHandler.waitOnKey(keyMsg);
 				break;
 			case 3:
+				// Add balance to user
+				
+				// Check users exist
+				if(users.size() == 0) {
+					System.out.println("No users created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					
+					menuHandler.prettyPrintUsers(users, numColumns);
+					int userChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (users.size() - 1) + "]", 0, users.size() - 1);
+					
+					double addBal = menuHandler.doubleGTInput("Please input balance to add (must be > 0.0)", 0);
+					
+					// Add balance to chosen user
+					users.get("User" + userChoice).deposit(addBal);
+				}
+
+				break;
+			case 4:
 				// List user documents
 				
 				int userChoice;
@@ -735,7 +781,7 @@ public class EntryPoint {
 				}
 				menuHandler.waitOnKey(keyMsg);
 				break;
-			case 4:
+			case 5:
 				// Add document to user
 
 				// Check users exist
@@ -798,7 +844,7 @@ public class EntryPoint {
 					users.get("User" + userChoice).addDocument(documents.get("Doc" + docChoice));
 				}
 				break;
-			case 5:
+			case 6:
 				// Remove document from user
 				
 				// Check users exist
@@ -839,7 +885,7 @@ public class EntryPoint {
 					users.get("User" + userChoice).removeDocument(documents.get("Doc" + docChoice));
 				}
 				break;
-			case 6:
+			case 7:
 				onMenu = false;
 				break;
 			}

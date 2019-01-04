@@ -5,7 +5,7 @@ VDM++ Tests
 user menu
     create user                                                         (done)
     list user (summary)                                                 (done)
-    add balance to user
+    add balance to user                                                 (done)
     list user documents                                                 (done - bug)
     add document to user                                                (done - bug)
     remove document from user                                           (done - bug)
@@ -24,14 +24,13 @@ printer menu
 network menu
     list printers in network                                            (done)
     add printer                                                         (done)
-    remove printer
+    remove printer                                                      (done)
     print individual reports                                            (done)
     print global report                                                 (done)
 
 Tests:      document pages > 0
 VDM/Java:   document reference bug! (VDM: copy doc / Java: copy doc - user,doc map)
 VDM/Java:   check all VDM functions for Java equivalent
-ASK:        how to have only 1 Network()
 Java:       convert IO.print to sysout
 Java:       test on linux
 Java:       refactor?

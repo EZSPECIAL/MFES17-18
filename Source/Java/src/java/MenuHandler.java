@@ -46,12 +46,13 @@ public class MenuHandler {
 
 		System.out.println("1 - Create user");
 		System.out.println("2 - List users (summary)");
-		System.out.println("3 - List user documents");
-		System.out.println("4 - Add a document to a user");
-		System.out.println("5 - Remove a document from a user");
-		System.out.println("6 - Back to main menu");
+		System.out.println("3 - Add balance to user");
+		System.out.println("4 - List user documents");
+		System.out.println("5 - Add a document to a user");
+		System.out.println("6 - Remove a document from a user");
+		System.out.println("7 - Back to main menu");
 
-		return 6;
+		return 7;
 	}
 
 	/**
