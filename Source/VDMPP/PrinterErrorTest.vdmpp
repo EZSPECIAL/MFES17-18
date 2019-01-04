@@ -91,24 +91,236 @@ operations
   		assertTrue(true);
   		assertEqual(pCapability.getCanPrintA4(),false);
   	);
+  	
+  	
     
-    
+																									-- Testing for PrinterCapacity class
+																									
+	-- Fails because the number of sheets lefts cant be greater than the max
+	private testPrinterCapacityMax: () ==> ()
+  	testPrinterCapacityMax() == (
+  		dcl pCapacity: PrinterCapacity := new PrinterCapacity(7,7,7,7);
+	    pCapacity.setNumOfSheetsA4(8);
+  	);
+  	
+  	
+  	
+																									-- Testing for PrinterPricing class
+																									
+	-- Fails because the price must be greater than zero
+	private testPrinterPricingGreaterThanZero: () ==> ()
+  	testPrinterPricingGreaterThanZero() == (
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0,0.7,0.8,0.9);
+  		assertTrue(true);
+	    assertEqual(pPricing.getPriceA4Black(),0);
+  	);
+  	
+  	
+  	
+																												-- Testing for User class
+																												
+	-- Fails because a User balance is always greater or equal to 0
+	private testUserBalanceGreaterOrEqualtoZero: () ==> ()
+  	testUserBalanceGreaterOrEqualtoZero() == (
+  		dcl user: User := new User(0.1);
+			user.withdraw(0.2);
+  	);
+  	
+  	
+  	
+																											-- Testing for Printer class
+																											
+	-- Fails because the printer has capacity (>0) on paper/toners it doesn't have the capability to print
+	private testPrinterHasCapacityButNotCapability: () ==> ()
+  	testPrinterHasCapacityButNotCapability() == (
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.5,0.8,0.6,1);
+	  	dcl pCapacity: PrinterCapacity := new PrinterCapacity(20,1,25,0);
+	  	dcl pCapability: PrinterCapability := new PrinterCapability(true,false,true,false);
+	  	dcl pStatus: PrinterStatus := new PrinterStatus();
+  		dcl printer: Printer := new Printer("testPrinterName", pCapability, pPricing, pCapacity, pStatus);
+  		assertTrue(true);
+  		assertEqual(printer.getPrinterName(), "testPrinterName");
+  	);
+  	
+  -- Fails because the printer doesnt have capacity (>0) on paper/toners that it does have the capability to print
+	private testPrinterHasCapabilityButNotCapacity: () ==> ()
+  	testPrinterHasCapabilityButNotCapacity() == (
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.5,0.8,0.6,1);
+	  	dcl pCapacity: PrinterCapacity := new PrinterCapacity(0,0,25,0);
+	  	dcl pCapability: PrinterCapability := new PrinterCapability(true,false,true,false);
+	  	dcl pStatus: PrinterStatus := new PrinterStatus();
+  		dcl printer: Printer := new Printer("testPrinterName", pCapability, pPricing, pCapacity, pStatus);
+  		assertTrue(true);
+  		assertEqual(printer.getPrinterName(), "testPrinterName");
+  	);
+  	
+  -- Fails because the document isn't on the user list
+  private testPrinterUserDoesntHaveDocument: () ==> ()
+  	testPrinterUserDoesntHaveDocument() == (
+  		dcl user: User := new User(30);
+  		
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.5,0.8,0.6,1);
+	  	dcl pCapacity: PrinterCapacity := new PrinterCapacity(20,0,25,0);
+	  	dcl pCapability: PrinterCapability := new PrinterCapability(true,false,true,false);
+	  	dcl pStatus: PrinterStatus := new PrinterStatus();
+  		dcl printer: Printer := new Printer("testPrinterName", pCapability, pPricing, pCapacity, pStatus);
+  		
+  		dcl doc1: Document := new Document("doc1", 10, '4', 'B');
+  		
+  		printer.print(doc1,user);
+  	);
+  	
+	-- Fails because the document format isn't supported by the printer
+  private testPrinterFormatNotInCapabilities: () ==> ()
+  	testPrinterFormatNotInCapabilities() == (
+  		dcl user: User := new User(30);
+  		
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.5,0.8,0.6,1);
+	  	dcl pCapacity: PrinterCapacity := new PrinterCapacity(20,0,25,0);
+	  	dcl pCapability: PrinterCapability := new PrinterCapability(true,false,true,false);
+	  	dcl pStatus: PrinterStatus := new PrinterStatus();
+  		dcl printer: Printer := new Printer("testPrinterName", pCapability, pPricing, pCapacity, pStatus);
+  		
+  		dcl doc1: Document := new Document("doc1", 10, '3', 'B');
+  		user.addDocument(doc1);
+  		
+  		printer.print(doc1,user);
+  	);
+  	
+  -- Fails because the document toner isn't supported by the printer
+  private testPrinterTonerNotInCapabilities: () ==> ()
+  	testPrinterTonerNotInCapabilities() == (
+  		dcl user: User := new User(30);
+  		
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.5,0.8,0.6,1);
+	  	dcl pCapacity: PrinterCapacity := new PrinterCapacity(20,0,25,0);
+	  	dcl pCapability: PrinterCapability := new PrinterCapability(true,false,true,false);
+	  	dcl pStatus: PrinterStatus := new PrinterStatus();
+  		dcl printer: Printer := new Printer("testPrinterName", pCapability, pPricing, pCapacity, pStatus);
+  		
+  		dcl doc1: Document := new Document("doc1", 10, '4', 'C');
+  		user.addDocument(doc1);
+  		
+  		printer.print(doc1,user);
+  	);
+  	
+  -- Fails because there is no toner left
+  private testPrinterNoTonerLeft: () ==> ()
+  	testPrinterNoTonerLeft() == (
+  		dcl user: User := new User(30);
+  		
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.5,0.8,0.6,1);
+	  	dcl pCapacity: PrinterCapacity := new PrinterCapacity(25,0,20,0);
+	  	dcl pCapability: PrinterCapability := new PrinterCapability(true,false,true,false);
+	  	dcl pStatus: PrinterStatus := new PrinterStatus();
+  		dcl printer: Printer := new Printer("testPrinterName", pCapability, pPricing, pCapacity, pStatus);
+  		
+  		dcl doc1: Document := new Document("doc1", 20, '4', 'B');
+  		dcl doc2: Document := new Document("doc2", 1, '4', 'B');
+  		user.addDocument(doc1);
+  		user.addDocument(doc2);
+  		
+  		printer.print(doc1,user);
+  		printer.print(doc2,user);
+  	);
+  	
+  -- Fails because there is no pages left
+  private testPrinterNoPagesLeft: () ==> ()
+  	testPrinterNoPagesLeft() == (
+  		dcl user: User := new User(30);
+  		
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.5,0.8,0.6,1);
+	  	dcl pCapacity: PrinterCapacity := new PrinterCapacity(20,0,25,0);
+	  	dcl pCapability: PrinterCapability := new PrinterCapability(true,false,true,false);
+	  	dcl pStatus: PrinterStatus := new PrinterStatus();
+  		dcl printer: Printer := new Printer("testPrinterName", pCapability, pPricing, pCapacity, pStatus);
+  		
+  		dcl doc1: Document := new Document("doc1", 20, '4', 'B');
+  		dcl doc2: Document := new Document("doc2", 1, '4', 'B');
+  		user.addDocument(doc1);
+  		user.addDocument(doc2);
+  		
+  		printer.print(doc1,user);
+  		printer.print(doc2,user)
+  	);
+  	
+  -- Fails because printer status isn't "operational"
+  private testPrinterNotOperational: () ==> ()
+  	testPrinterNotOperational() == (
+  		dcl user: User := new User(30);
+  		
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.5,0.8,0.6,1);
+	  	dcl pCapacity: PrinterCapacity := new PrinterCapacity(20,0,25,0);
+	  	dcl pCapability: PrinterCapability := new PrinterCapability(true,false,true,false);
+	  	dcl pStatus: PrinterStatus := new PrinterStatus();
+  		dcl printer: Printer := new Printer("testPrinterName", pCapability, pPricing, pCapacity, pStatus);
+  		
+  		dcl doc1: Document := new Document("doc1", 20, '4', 'B');
+  		user.addDocument(doc1);
+  		
+  		printer.break({"needFixing"});
+  		
+  		printer.print(doc1,user);
+  	);
+  	
+ 	-- Fails because the user doesnt have enough balance
+  private testPrinterUserDoesntHaveBalance: () ==> ()
+  	testPrinterUserDoesntHaveBalance() == (
+  		dcl user: User := new User(30);
+  		
+  		dcl pPricing: PrinterPricing := new PrinterPricing(0.5,0.8,0.6,1);
+	  	dcl pCapacity: PrinterCapacity := new PrinterCapacity(20,0,25,0);
+	  	dcl pCapability: PrinterCapability := new PrinterCapability(true,false,true,false);
+	  	dcl pStatus: PrinterStatus := new PrinterStatus();
+  		dcl printer: Printer := new Printer("testPrinterName", pCapability, pPricing, pCapacity, pStatus);
+  		
+  		dcl doc1: Document := new Document("doc1", 20, '4', 'B');
+  		user.addDocument(doc1);
+  		
+  		printer.break({"needFixing"});
+  		
+  		printer.print(doc1,user);
+  	);
+  	
+  	
+  	
 	 --all of these tests should fail, test one at a time
    -- Testing entry point, calls all the test functions in succession
    public static main: () ==> ()
      main() == (
-       dcl testSuite: PrinterErrorTest := new PrinterErrorTest();
-       --testSuite.testPrinterStatusUnavailableStatus();
-       --testSuite.testPrinterStatusOperationalAndNeedFixing();
-       --testSuite.testPrinterStatusIsntOperationalOrNeedFixing();
-       
-       --testSuite.testDocumentPositiveNumPages();
-       --testSuite.testDocumentUnavailableFormat();
-       --testSuite.testDocumentUnavailableToner();
-       
-       --testSuite.testPrinterCapabilityBlackOrColor();
-       testSuite.testPrinterCapabilityA3OrA4();
-       --testSuite.
+			dcl testSuite: PrinterErrorTest := new PrinterErrorTest();
+							--PrinterStatus
+			--testSuite.testPrinterStatusUnavailableStatus();
+			--testSuite.testPrinterStatusOperationalAndNeedFixing();
+			--testSuite.testPrinterStatusIsntOperationalOrNeedFixing();
+			
+							--Document
+			--testSuite.testDocumentPositiveNumPages();
+			--testSuite.testDocumentUnavailableFormat();
+			--testSuite.testDocumentUnavailableToner();
+			
+							--PrinterCapability
+			--testSuite.testPrinterCapabilityBlackOrColor();
+			--testSuite.testPrinterCapabilityA3OrA4();
+			
+							--PrinterCapacity
+			--testSuite.testPrinterCapacityMax();
+			
+							--PrinterPricing
+			--testSuite.testPrinterPricingGreaterThanZero();
+			
+							--User
+			--testSuite.testUserBalanceGreaterOrEqualtoZero();
+			 
+			 				--Printer
+			--testSuite.testPrinterHasCapacityButNotCapability();
+			--testSuite.testPrinterHasCapabilityButNotCapacity();
+			--testSuite.testPrinterUserDoesntHaveDocument();
+			--testSuite.testPrinterFormatNotInCapabilities();
+			--testSuite.testPrinterTonerNotInCapabilities();
+			--testSuite.testPrinterNoTonerLeft();
+			--testSuite.testPrinterNoPagesLeft();
+			testSuite.testPrinterNotOperational();
      );
 
 
