@@ -31,8 +31,10 @@ public class MenuHandler {
 		System.out.println("1 - User menu");
 		System.out.println("2 - Document menu");
 		System.out.println("3 - Printer menu");
+		System.out.println("4 - Network menu");
+		System.out.println("5 - Quit");
 
-		return 3;
+		return 5;
 	}
 
 	/**
@@ -116,6 +118,19 @@ public class MenuHandler {
 		System.out.println("3 - Black/Color");
 		
 		return 3;
+	}
+	
+	// TODO doc
+	public int networkMenu() {
+		
+		System.out.println("1 - List printers in network");
+		System.out.println("2 - Add printer");
+		System.out.println("3 - Remove printer");
+		System.out.println("4 - Print individual reports");
+		System.out.println("5 - Print global report");
+		System.out.println("6 - Back to main menu");
+		
+		return 6;
 	}
 	
 	/**
@@ -401,6 +416,41 @@ public class MenuHandler {
 		int columnCount = 1;
 
 		for(Map.Entry<String, Printer> entry : map.entrySet()) {
+			if(remaining > 1 && columnCount != numColumns) {
+				System.out.print(entry.getKey() + " - name: " + entry.getValue().getPrinterName() +
+						" - capabilities: " + parsePrinterCapabilities(entry.getValue()) +
+						" - price: " + parsePrinterPricing(entry.getValue()) +
+						"- capacity: " + parsePrinterCapacity(entry.getValue()) +
+						"- status: " + parsePrinterStatus(entry.getValue()) + " | ");
+			} else {
+				System.out.print(entry.getKey() + " - name: " + entry.getValue().getPrinterName() +
+						" - capabilities: " + parsePrinterCapabilities(entry.getValue()) +
+						" - price: " + parsePrinterPricing(entry.getValue()) +
+						"- capacity: " + parsePrinterCapacity(entry.getValue()) +
+						" - status: " + parsePrinterStatus(entry.getValue()));
+			}
+
+			if(columnCount == numColumns && remaining > 0) {
+				System.out.println();
+				columnCount = 0;
+			}
+			columnCount++;
+			remaining--;
+		}
+
+		System.out.println();
+	}
+	
+	// TODO doc
+	public void prettyPrintPrintersSet(TreeMap<String, Printer> printerMap, VDMSet printerSet, int numColumns) {
+
+		int remaining = printerSet.size();
+		int columnCount = 1;
+
+		for(Map.Entry<String, Printer> entry : printerMap.entrySet()) {
+			
+			if(!printerSet.contains(entry.getValue())) continue;
+			
 			if(remaining > 1 && columnCount != numColumns) {
 				System.out.print(entry.getKey() + " - name: " + entry.getValue().getPrinterName() +
 						" - capabilities: " + parsePrinterCapabilities(entry.getValue()) +

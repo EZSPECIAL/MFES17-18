@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import org.overture.codegen.runtime.VDMSet;
 
 import MFESTA.Document;
+import MFESTA.Network;
 import MFESTA.Printer;
 import MFESTA.PrinterCapability;
 import MFESTA.PrinterCapacity;
@@ -31,6 +32,7 @@ public class EntryPoint {
 	private static TreeMap<String, User> users = new TreeMap<String, User>();
 	private static TreeMap<String, Document> documents = new TreeMap<String, Document>();
 	private static TreeMap<String, Printer> printers = new TreeMap<String, Printer>();
+	private static Network network = new Network();
 
 	public static void main(String[] args) {
 
@@ -62,6 +64,119 @@ public class EntryPoint {
 			case 3:
 				// Printer menu
 				printerMenuLogic();
+				break;
+			case 4:
+				// Network menu
+				networkMenuLogic();
+				break;
+			case 5:
+				System.exit(0);
+				break;
+			}
+		}
+	}
+	
+	// TODO doc
+	private static void networkMenuLogic() {
+
+		boolean onMenu = true;
+
+		while(onMenu) {
+
+			menuHandler.clrscr();
+			int maxChoice = menuHandler.networkMenu();
+
+			int intChoice = menuHandler.intRangeInput("Please input a number in range [1, " + maxChoice + "]", 1, maxChoice);
+
+			switch(intChoice) {
+			case 1:
+				// List printers in network
+				
+				// Check network has printers
+				VDMSet printerSet = network.getPrinterList();
+				if(printerSet.size() == 0) {
+					System.out.println("Network has no printers! Please add printers before using this menu.");
+				} else {
+					menuHandler.prettyPrintPrintersSet(printers, printerSet, 1);
+				}
+				menuHandler.waitOnKey(keyMsg);
+				break;
+			case 2:
+				// Add printer
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					
+					TreeMap<String, Printer> availablePrinters = new TreeMap<String, Printer>();
+					
+					// Check which printers aren't already in network
+					for(Map.Entry<String, Printer> entry : printers.entrySet()) {
+						if(!network.getPrinterList().contains(entry.getValue())) availablePrinters.put(entry.getKey(), entry.getValue());
+					}
+					
+					// All printers already in network
+					if(availablePrinters.size() == 0) {
+						System.out.println("All existing printers belong to the network already!");
+						menuHandler.waitOnKey(keyMsg);
+						break;
+					}
+					
+					menuHandler.prettyPrintPrinters(availablePrinters, 1);
+					
+					// Await valid printer input
+					int printerChoice;
+					do {
+						printerChoice = menuHandler.intInput("Please input a number seen above.");
+					} while(!availablePrinters.containsKey("Printer" + printerChoice));
+					
+					// Check chosen printer's name doesn't conflict with another network printer
+					boolean isInvalid = false;
+
+					String selectedPrinterName = printers.get("Printer" + printerChoice).getPrinterName();
+					for(Iterator<Printer> iter = network.getPrinterList().iterator(); iter.hasNext(); ) {
+						Printer printer = iter.next();
+						if(printer.getPrinterName().equals(selectedPrinterName)) {
+							isInvalid = true;
+							break;
+						}
+					}
+					
+					// Duplicate printer name
+					if(isInvalid) {
+						System.out.println("Network already has a printer with that name, cannot add this printer.");
+						menuHandler.waitOnKey(keyMsg);
+						break;
+					}
+					
+					network.addPrinter(printers.get("Printer" + printerChoice));
+				}
+				break;
+			case 3:
+				// Remove printer TODO
+				break;
+			case 4:
+				// Print individual reports
+				
+				// Check network has printers
+				printerSet = network.getPrinterList();
+				if(printerSet.size() == 0) {
+					System.out.println("Network has no printers! Please add printers before using this menu.");
+				} else {
+					network.printIndividualReport();
+				}
+
+				menuHandler.waitOnKey(keyMsg);
+				break;
+			case 5:
+				// Print global report				
+				network.printGlobalReport();
+				menuHandler.waitOnKey(keyMsg);
+				break;
+			case 6:
+				onMenu = false;
 				break;
 			}
 		}
