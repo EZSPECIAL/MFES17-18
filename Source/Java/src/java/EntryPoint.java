@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import org.overture.codegen.runtime.VDMSet;
 
 import MFESTA.Document;
+import MFESTA.Network;
 import MFESTA.Printer;
 import MFESTA.PrinterCapability;
 import MFESTA.PrinterCapacity;
@@ -31,6 +32,7 @@ public class EntryPoint {
 	private static TreeMap<String, User> users = new TreeMap<String, User>();
 	private static TreeMap<String, Document> documents = new TreeMap<String, Document>();
 	private static TreeMap<String, Printer> printers = new TreeMap<String, Printer>();
+	private static Network network = new Network();
 
 	public static void main(String[] args) {
 
@@ -62,6 +64,146 @@ public class EntryPoint {
 			case 3:
 				// Printer menu
 				printerMenuLogic();
+				break;
+			case 4:
+				// Network menu
+				networkMenuLogic();
+				break;
+			case 5:
+				System.exit(0);
+				break;
+			}
+		}
+	}
+	
+	// TODO doc
+	private static void networkMenuLogic() {
+
+		boolean onMenu = true;
+
+		while(onMenu) {
+
+			menuHandler.clrscr();
+			int maxChoice = menuHandler.networkMenu();
+
+			int intChoice = menuHandler.intRangeInput("Please input a number in range [1, " + maxChoice + "]", 1, maxChoice);
+
+			switch(intChoice) {
+			case 1:
+				// List printers in network
+				
+				// Check network has printers
+				VDMSet printerSet = network.getPrinterList();
+				if(printerSet.size() == 0) {
+					System.out.println("Network has no printers! Please add printers before using this menu.");
+				} else {
+					menuHandler.prettyPrintPrintersSet(printers, printerSet, 1);
+				}
+				menuHandler.waitOnKey(keyMsg);
+				break;
+			case 2:
+				// Add printer
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					
+					TreeMap<String, Printer> availablePrinters = new TreeMap<String, Printer>();
+					
+					// Check which printers aren't already in network
+					for(Map.Entry<String, Printer> entry : printers.entrySet()) {
+						if(!network.getPrinterList().contains(entry.getValue())) availablePrinters.put(entry.getKey(), entry.getValue());
+					}
+					
+					// All printers already in network
+					if(availablePrinters.size() == 0) {
+						System.out.println("All existing printers belong to the network already!");
+						menuHandler.waitOnKey(keyMsg);
+						break;
+					}
+					
+					menuHandler.prettyPrintPrinters(availablePrinters, 1);
+					
+					// Await valid printer input
+					int printerChoice;
+					do {
+						printerChoice = menuHandler.intInput("Please input a number seen above.");
+					} while(!availablePrinters.containsKey("Printer" + printerChoice));
+					
+					// Check chosen printer's name doesn't conflict with another network printer
+					boolean isInvalid = false;
+
+					String selectedPrinterName = printers.get("Printer" + printerChoice).getPrinterName();
+					for(Iterator<Printer> iter = network.getPrinterList().iterator(); iter.hasNext(); ) {
+						Printer printer = iter.next();
+						if(printer.getPrinterName().equals(selectedPrinterName)) {
+							isInvalid = true;
+							break;
+						}
+					}
+					
+					// Duplicate printer name
+					if(isInvalid) {
+						System.out.println("Network already has a printer with that name, cannot add this printer.");
+						menuHandler.waitOnKey(keyMsg);
+						break;
+					}
+					
+					network.addPrinter(printers.get("Printer" + printerChoice));
+				}
+				break;
+			case 3:
+				// Remove printer
+				
+				// Check network has printers
+				printerSet = network.getPrinterList();
+				if(printerSet.size() == 0) {
+					System.out.println("Network has no printers! Please add printers before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+					break;
+				}			
+				
+				TreeMap<String, Printer> availablePrinters = new TreeMap<String, Printer>();
+				
+				// Check which printers are in the network
+				for(Map.Entry<String, Printer> entry : printers.entrySet()) {
+					if(network.getPrinterList().contains(entry.getValue())) availablePrinters.put(entry.getKey(), entry.getValue());
+				}
+				
+				menuHandler.prettyPrintPrinters(availablePrinters, 1);
+				
+				// Await valid printer input
+				int printerChoice;
+				do {
+					printerChoice = menuHandler.intInput("Please input a number seen above.");
+				} while(!availablePrinters.containsKey("Printer" + printerChoice));
+				
+				// Remove printer from network
+				network.removePrinter(printers.get("Printer" + printerChoice));
+				
+				break;
+			case 4:
+				// Print individual reports
+				
+				// Check network has printers
+				printerSet = network.getPrinterList();
+				if(printerSet.size() == 0) {
+					System.out.println("Network has no printers! Please add printers before using this menu.");
+				} else {
+					network.printIndividualReport();
+				}
+
+				menuHandler.waitOnKey(keyMsg);
+				break;
+			case 5:
+				// Print global report				
+				network.printGlobalReport();
+				menuHandler.waitOnKey(keyMsg);
+				break;
+			case 6:
+				onMenu = false;
 				break;
 			}
 		}
@@ -97,13 +239,157 @@ public class EntryPoint {
 				break;
 			case 3:
 				// Print document
-				printDocumentMenuLogic();
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					printDocumentMenuLogic();
+				}
+				break;
+			case 4:
+				// Break/empty printer
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					breakPrinterMenuLogic();
+				}
+				break;
+			case 5:
+				// Break all
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					
+					menuHandler.prettyPrintPrinters(printers, 1);
+					int printerChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (printers.size() - 1) + "]", 0, printers.size() - 1);
+
+					printers.get("Printer" + printerChoice).breakAll();
+				}
+				break;
+			case 6:
+				// Fix/refill printer
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					fixPrinterMenuLogic();
+				}
 				break;
 			case 7:
+				// Fix all
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					
+					menuHandler.prettyPrintPrinters(printers, 1);
+					int printerChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (printers.size() - 1) + "]", 0, printers.size() - 1);
+
+					printers.get("Printer" + printerChoice).fixAll();
+				}
+				break;
+			case 8:
+				// Print report
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+				} else {
+					
+					menuHandler.prettyPrintPrinters(printers, 1);
+					int printerChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (printers.size() - 1) + "]", 0, printers.size() - 1);
+
+					printers.get("Printer" + printerChoice).printIndividualReport();
+				}
+				menuHandler.waitOnKey(keyMsg);
+				break;
+			case 9:
 				onMenu = false;
 				break;
 			}
 		}
+	}
+	
+	// TODO doc
+	private static void fixPrinterMenuLogic() {
+	
+		menuHandler.prettyPrintPrinters(printers, 1);
+		int printerChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (printers.size() - 1) + "]", 0, printers.size() - 1);
+
+		Printer printer = printers.get("Printer" + printerChoice);
+		VDMSet fixSet = new VDMSet();
+		VDMSet printerStatus = printer.getPrinterStatus().getStatus();
+		
+		// Check printer has problems
+		if(printerStatus.contains("operational") && printerStatus.size() == 1) {
+			System.out.println("Printer has no problems, please select another.");
+			menuHandler.waitOnKey(keyMsg);
+			return;
+		}
+		
+		for(Iterator<String> iter = printerStatus.iterator(); iter.hasNext(); ) {
+			String status = iter.next();
+			
+			// Ask what to fix for each of the printer's current negative status
+			if(status.equals("needA4")) {
+				if(menuHandler.inputYesNo("Refill A4 paper stock? [y/n]")) fixSet.add("needA4");
+			} else if(status.equals("needA3")) {
+				if(menuHandler.inputYesNo("Refill A3 paper stock? [y/n]")) fixSet.add("needA3");
+			} else if(status.equals("needBlackToner")) {
+				if(menuHandler.inputYesNo("Refill black toner stock? [y/n]")) fixSet.add("needBlackToner");
+			} else if(status.equals("needColorToner")) {
+				if(menuHandler.inputYesNo("Refill color toner stock? [y/n]")) fixSet.add("needColorToner");
+			} else if(status.equals("needFixing")) {
+				if(menuHandler.inputYesNo("Fix malfunction in printer? [y/n]")) fixSet.add("needFixing");
+			}
+		}
+
+		printer.fix(fixSet);
+	}
+	
+	// TODO doc
+	private static void breakPrinterMenuLogic() {
+		
+		menuHandler.prettyPrintPrinters(printers, 1);
+		int printerChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (printers.size() - 1) + "]", 0, printers.size() - 1);
+
+		Printer printer = printers.get("Printer" + printerChoice);
+		VDMSet breakSet = new VDMSet();
+		
+		// Ask what to break for each of the printer's capabilities
+		if(printer.getPrinterCapabilities().getCanPrintA4()) {
+			if(menuHandler.inputYesNo("Empty A4 paper stock? [y/n]")) breakSet.add("needA4");
+		}
+		
+		if(printer.getPrinterCapabilities().getCanPrintA3()) {
+			if(menuHandler.inputYesNo("Empty A3 paper stock? [y/n]")) breakSet.add("needA3");
+		}
+		
+		if(printer.getPrinterCapabilities().getCanPrintBlack()) {
+			if(menuHandler.inputYesNo("Empty black toner stock? [y/n]")) breakSet.add("needBlackToner");
+		}
+		
+		if(printer.getPrinterCapabilities().getCanPrintColor()) {
+			if(menuHandler.inputYesNo("Empty color toner stock? [y/n]")) breakSet.add("needColorToner");
+		}
+		
+		if(printer.getPrinterStatus().getStatus().contains("operational")) {
+			if(menuHandler.inputYesNo("Create malfunction in printer? [y/n]")) breakSet.add("needFixing");
+		}
+		
+		printer.break_(breakSet);
 	}
 	
 	// TODO doc
@@ -145,17 +431,73 @@ public class EntryPoint {
 
 		Document toPrint = documents.get("Doc" + docChoice);
 
+		// Check printers available for the chosen document
+		TreeMap<String, Printer> availablePrinters = checkPrinterAvailability(toPrint);
+		
+		// No printer can print the chosen document
+		if(availablePrinters.size() == 0) {
+			menuHandler.waitOnKey(keyMsg);
+			return;
+		}
+		
+		// List available printers and await user input
+		menuHandler.prettyPrintPrinters(availablePrinters, 1);
+		
+		// Await valid printer input
+		int printerChoice;
+		do {
+			printerChoice = menuHandler.intInput("Please input a number seen above.");
+		} while(!availablePrinters.containsKey("Printer" + printerChoice));
+		
+		// Check user balance
+		double totalCost = checkUserBalance(users.get("User" + userChoice), toPrint, printers.get("Printer" + printerChoice));
+		if(totalCost != 0) {
+			System.out.println("Not enough balance to print, needed: " + totalCost);
+			menuHandler.waitOnKey(keyMsg);
+			return;
+		}
+		
+		printers.get("Printer" + printerChoice).print(toPrint, users.get("User" + userChoice));
+	}
+	
+	// TODO doc
+	private static double checkUserBalance(User user, Document doc, Printer printer) {
+		
+		double balance = user.getBalance().doubleValue();
+		int pagesToPrint = printer.numPagesToPrint(doc).intValue();
+		
+		char format = doc.getPageFormat();
+		char toner = doc.getPageToner();
+
+		double pricing = 0.0;
+
+		// Get printer pricing
+		if(format == '4' && toner == 'B') {
+			pricing = printer.getPrinterPricing().getPriceA4Black().doubleValue();
+		} else if(format == '4' && toner == 'C') {
+			pricing = printer.getPrinterPricing().getPriceA4Color().doubleValue();
+		} else if(format == '3' && toner == 'B') {
+			pricing = printer.getPrinterPricing().getPriceA3Black().doubleValue();
+		} else if(format == '3' && toner == 'C') {
+			pricing = printer.getPrinterPricing().getPriceA3Color().doubleValue();
+		}
+		
+		// Calc total cost
+		double totalCost = pricing * pagesToPrint;
+		
+		if(balance >= totalCost) return 0;
+		else return totalCost;
 	}
 	
 	// TODO doc
 	private static TreeMap<String, Printer> checkPrinterAvailability(Document doc) {
 		
-		int pagesLeft = (int) doc.getPagesLeft();
 		char format = doc.getPageFormat();
 		char toner = doc.getPageToner();
+			
+		TreeMap<String, Printer> capablePrinters = new TreeMap<String, Printer>();
 		
-		boolean atLeastOnePrinterCapability = false;
-		
+		// Check printers capable of printing specified document
 		for(Map.Entry<String, Printer> entry : printers.entrySet()) {
 			
 			Printer printer = entry.getValue();
@@ -173,22 +515,64 @@ public class EntryPoint {
 				neededCapabilityExists = printer.getPrinterCapabilities().getCanPrintA3() && printer.getPrinterCapabilities().getCanPrintColor();
 			}
 			
-			setBooleanTrueOnce(atLeastOnePrinterCapability, neededCapabilityExists);
-			
-			// TODO create temp map with capable printers
+			// Add printers capable of printing the specified document
+			if(neededCapabilityExists) capablePrinters.put(entry.getKey(), printer);
 		}
 		
-		// Check temp map
-		// Check printer has paper/toner left TODO
-		// Check printer is operational TODO
-	}
-	
-	// TODO doc
-	private static boolean setBooleanTrueOnce(boolean toSet, boolean shouldSet) {
+		// No capable printers found
+		if(capablePrinters.size() == 0) {
+			System.out.println("No printer can print the document format/toner combination! Please add a printer with the required capabilities.");
+			return new TreeMap<String, Printer>();
+		}
 		
-		if(toSet) return true;
-		else if(shouldSet) return true;
-		else return false;
+		boolean atLeastOnePaperTonerAvail = false;
+		boolean atLeastOneOperational = false;
+		
+		TreeMap<String, Printer> availablePrinters = new TreeMap<String, Printer>();
+		
+		// Check previous printers toner and paper levels as well as operational status
+		for(Map.Entry<String, Printer> entry : capablePrinters.entrySet()) {
+			
+			Printer printer = entry.getValue();
+			
+			boolean printerHasPaperToner = false;
+			
+			// Check printer for needed capabilities (paper/toner)
+			if(format == '4' && toner == 'B') {
+				printerHasPaperToner = printer.getPrinterCapacities().getNumOfSheetsA4().intValue() > 0 && printer.getPrinterCapacities().getBlackPrintsLeft().intValue() > 0;
+			} else if(format == '4' && toner == 'C') {
+				printerHasPaperToner = printer.getPrinterCapacities().getNumOfSheetsA4().intValue() > 0 && printer.getPrinterCapacities().getColorPrintsLeft().intValue() > 0;
+			} else if(format == '3' && toner == 'B') {
+				printerHasPaperToner = printer.getPrinterCapacities().getNumOfSheetsA3().intValue() > 0 && printer.getPrinterCapacities().getBlackPrintsLeft().intValue() > 0;
+			} else if(format == '3' && toner == 'C') {
+				printerHasPaperToner = printer.getPrinterCapacities().getNumOfSheetsA3().intValue() > 0 && printer.getPrinterCapacities().getColorPrintsLeft().intValue() > 0;
+			}
+			
+			// Does printer have enough paper/toner for at least 1 page of the document?
+			if(printerHasPaperToner) {
+				atLeastOnePaperTonerAvail = true;
+				
+				// Is the printer operational?
+				if(printer.getPrinterStatus().getStatus().contains("operational")) {
+					atLeastOneOperational = true;
+					availablePrinters.put(entry.getKey(), printer);
+				}
+			}
+		}
+		
+		// No capable printer has paper/toner left
+		if(!atLeastOnePaperTonerAvail) {
+			System.out.println("Printers that can print the document found but they're all out of paper/toner. Please use the refill menu.");
+			return new TreeMap<String, Printer>();
+		}
+		
+		// Printers found are all non operational
+		if(!atLeastOneOperational) {
+			System.out.println("Printers that can print the document found but they're all in need of fixing. Please use the fix menu.");
+			return new TreeMap<String, Printer>();
+		}
+		
+		return availablePrinters;
 	}
 	
 	// TODO doc
@@ -357,6 +741,25 @@ public class EntryPoint {
 				menuHandler.waitOnKey(keyMsg);
 				break;
 			case 3:
+				// Add balance to user
+				
+				// Check users exist
+				if(users.size() == 0) {
+					System.out.println("No users created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					
+					menuHandler.prettyPrintUsers(users, numColumns);
+					int userChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (users.size() - 1) + "]", 0, users.size() - 1);
+					
+					double addBal = menuHandler.doubleGTInput("Please input balance to add (must be > 0.0)", 0);
+					
+					// Add balance to chosen user
+					users.get("User" + userChoice).deposit(addBal);
+				}
+
+				break;
+			case 4:
 				// List user documents
 				
 				int userChoice;
@@ -378,7 +781,7 @@ public class EntryPoint {
 				}
 				menuHandler.waitOnKey(keyMsg);
 				break;
-			case 4:
+			case 5:
 				// Add document to user
 
 				// Check users exist
@@ -441,7 +844,7 @@ public class EntryPoint {
 					users.get("User" + userChoice).addDocument(documents.get("Doc" + docChoice));
 				}
 				break;
-			case 5:
+			case 6:
 				// Remove document from user
 				
 				// Check users exist
@@ -482,7 +885,7 @@ public class EntryPoint {
 					users.get("User" + userChoice).removeDocument(documents.get("Doc" + docChoice));
 				}
 				break;
-			case 6:
+			case 7:
 				onMenu = false;
 				break;
 			}
@@ -579,15 +982,17 @@ public class EntryPoint {
 		
 		PrinterCapability capability1 = objectHandler.createPrinterCapability(true, false, true, true);
 		PrinterCapability capability2 = objectHandler.createPrinterCapability(false, true, true, false);
+		PrinterCapability capability3 = objectHandler.createPrinterCapability(false, true, true, false);
 		
 		PrinterPricing pricing = objectHandler.createPrinterPricing(0.03, 0.14, 0.06, 0.24);
 		
 		PrinterCapacity capacity1 = objectHandler.createPrinterCapacity(25, 0, 10, 30);
 		PrinterCapacity capacity2 = objectHandler.createPrinterCapacity(0, 10, 15, 0);
+		PrinterCapacity capacity3 = objectHandler.createPrinterCapacity(0, 10, 15, 0);
 		
 		printers.put("Printer0", objectHandler.createPrinter("A4All", capability1, pricing, capacity1, objectHandler.createPrinterStatus()));
 		printers.put("Printer1", objectHandler.createPrinter("A3B", capability2, pricing, capacity2, objectHandler.createPrinterStatus()));
-		printers.put("Printer2", objectHandler.createPrinter("A3B-rip", capability2, pricing, capacity2, objectHandler.createPrinterStatus()));
+		printers.put("Printer2", objectHandler.createPrinter("A3B-rip", capability3, pricing, capacity3, objectHandler.createPrinterStatus()));
 		
 		VDMSet status = new VDMSet();
 		status.add("needFixing");

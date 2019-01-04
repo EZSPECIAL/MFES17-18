@@ -1,6 +1,7 @@
 package MFESTA.java;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -13,6 +14,13 @@ import MFESTA.User;
 
 public class MenuHandler {
 
+	private static final ArrayList<String> yesNoChoices = new ArrayList<String>() {{
+		add("yes");
+		add("no");
+		add("y");
+		add("n");
+	}};
+	
 	/**
 	 * Prints the main menu.
 	 * 
@@ -23,8 +31,10 @@ public class MenuHandler {
 		System.out.println("1 - User menu");
 		System.out.println("2 - Document menu");
 		System.out.println("3 - Printer menu");
+		System.out.println("4 - Network menu");
+		System.out.println("5 - Quit");
 
-		return 3;
+		return 5;
 	}
 
 	/**
@@ -36,12 +46,13 @@ public class MenuHandler {
 
 		System.out.println("1 - Create user");
 		System.out.println("2 - List users (summary)");
-		System.out.println("3 - List user documents");
-		System.out.println("4 - Add a document to a user");
-		System.out.println("5 - Remove a document from a user");
-		System.out.println("6 - Back to main menu");
+		System.out.println("3 - Add balance to user");
+		System.out.println("4 - List user documents");
+		System.out.println("5 - Add a document to a user");
+		System.out.println("6 - Remove a document from a user");
+		System.out.println("7 - Back to main menu");
 
-		return 6;
+		return 7;
 	}
 
 	/**
@@ -81,11 +92,13 @@ public class MenuHandler {
 		System.out.println("2 - List printers");
 		System.out.println("3 - Print document");
 		System.out.println("4 - Break/empty printer");
-		System.out.println("5 - Fix/refill printer");
-		System.out.println("6 - Print report");
-		System.out.println("7 - Back to main menu");
+		System.out.println("5 - Break all");
+		System.out.println("6 - Fix/refill printer");
+		System.out.println("7 - Fix all");
+		System.out.println("8 - Print report");
+		System.out.println("9 - Back to main menu");
 		
-		return 7;
+		return 9;
 	}
 	
 	// TODO doc
@@ -108,6 +121,19 @@ public class MenuHandler {
 		return 3;
 	}
 	
+	// TODO doc
+	public int networkMenu() {
+		
+		System.out.println("1 - List printers in network");
+		System.out.println("2 - Add printer");
+		System.out.println("3 - Remove printer");
+		System.out.println("4 - Print individual reports");
+		System.out.println("5 - Print global report");
+		System.out.println("6 - Back to main menu");
+		
+		return 6;
+	}
+	
 	/**
 	 * Shows the specified message and waits on ENTER key input.
 	 * 
@@ -121,6 +147,22 @@ public class MenuHandler {
 		sc.nextLine();
 	}
 
+	// TODO doc
+	public boolean inputYesNo(String msg) {
+
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		
+		String input;
+		do {
+			System.out.println(msg);
+			input = sc.nextLine();
+		} while(!yesNoChoices.contains(input));
+
+		if(input.equals("no") || input.equals("n")) return false;
+		else return true;
+	}
+	
 	/**
 	 * Prints a message and waits on the user to input a string.
 	 * 
@@ -375,6 +417,41 @@ public class MenuHandler {
 		int columnCount = 1;
 
 		for(Map.Entry<String, Printer> entry : map.entrySet()) {
+			if(remaining > 1 && columnCount != numColumns) {
+				System.out.print(entry.getKey() + " - name: " + entry.getValue().getPrinterName() +
+						" - capabilities: " + parsePrinterCapabilities(entry.getValue()) +
+						" - price: " + parsePrinterPricing(entry.getValue()) +
+						"- capacity: " + parsePrinterCapacity(entry.getValue()) +
+						"- status: " + parsePrinterStatus(entry.getValue()) + " | ");
+			} else {
+				System.out.print(entry.getKey() + " - name: " + entry.getValue().getPrinterName() +
+						" - capabilities: " + parsePrinterCapabilities(entry.getValue()) +
+						" - price: " + parsePrinterPricing(entry.getValue()) +
+						"- capacity: " + parsePrinterCapacity(entry.getValue()) +
+						" - status: " + parsePrinterStatus(entry.getValue()));
+			}
+
+			if(columnCount == numColumns && remaining > 0) {
+				System.out.println();
+				columnCount = 0;
+			}
+			columnCount++;
+			remaining--;
+		}
+
+		System.out.println();
+	}
+	
+	// TODO doc
+	public void prettyPrintPrintersSet(TreeMap<String, Printer> printerMap, VDMSet printerSet, int numColumns) {
+
+		int remaining = printerSet.size();
+		int columnCount = 1;
+
+		for(Map.Entry<String, Printer> entry : printerMap.entrySet()) {
+			
+			if(!printerSet.contains(entry.getValue())) continue;
+			
 			if(remaining > 1 && columnCount != numColumns) {
 				System.out.print(entry.getKey() + " - name: " + entry.getValue().getPrinterName() +
 						" - capabilities: " + parsePrinterCapabilities(entry.getValue()) +
