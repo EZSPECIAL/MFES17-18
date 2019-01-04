@@ -1,0 +1,116 @@
+class PrinterErrorTest
+operations
+
+  -- Checks if a boolean expression is true
+  private assertTrue: bool ==> ()
+	  assertTrue(cond) == return pre cond;
+
+  -- Checks values are equal
+	private assertEqual: ? * ? ==> ()
+	  assertEqual(expected, actual) == return post expected = actual;
+	  
+	-- Checks values are approximately equal
+	private assertApproximatelyEqual: real * real ==> ()
+	  assertApproximatelyEqual(expected, actual) == (
+	  	dcl delta: real := abs expected - actual;
+	  	if delta < 0.00001
+      then assertTrue(true)
+      else assertTrue(false);
+	  );
+	  
+	  
+	  
+																									-- Testing for PrinterStatus class --
+	
+	-- Fails because needA5 is not an available status 
+  private testPrinterStatusUnavailableStatus: () ==> ()
+    testPrinterStatusUnavailableStatus() == (
+      dcl p1: PrinterStatus := new PrinterStatus();
+      p1.addStatus("needA5");
+    );
+    
+  -- Fails because a printer cant be operational and needing fixing
+	private testPrinterStatusOperationalAndNeedFixing: () ==> ()
+    testPrinterStatusOperationalAndNeedFixing() == (
+      dcl p1: PrinterStatus := new PrinterStatus();
+      p1.addStatus("needFixing");
+    );
+  
+  -- Fails because a printer needs to be operational or needing fixing
+	private testPrinterStatusIsntOperationalOrNeedFixing: () ==> ()
+    testPrinterStatusIsntOperationalOrNeedFixing() == (
+      dcl p1: PrinterStatus := new PrinterStatus();
+      p1.addStatus("needA4");
+      p1.removeStatus("operational");
+    );
+
+
+
+																											-- Testing for Document class --
+  
+  -- Fails because a document needs a positive ( >=1 ) number of pages
+  private testDocumentPositiveNumPages: () ==> ()
+  	testDocumentPositiveNumPages() == (
+  		dcl d: Document := new Document("nomeTeste", 0, '4', 'C');
+  		assertTrue(true);
+  		assertEqual(d.getDocName(),"nomeTeste");
+  	);
+  	
+  -- Fails because a document format isnt '4' or '3' (the available formats)
+  private testDocumentUnavailableFormat: () ==> ()
+  	testDocumentUnavailableFormat() == (
+  		dcl d: Document := new Document("nomeTeste", 1, '5', 'C');
+  		assertTrue(true);
+  		assertEqual(d.getDocName(),"nomeTeste");
+  	);
+  
+  -- Fails because a document toner isnt 'B' or 'C' (the available toners)
+  private testDocumentUnavailableToner: () ==> ()
+  	testDocumentUnavailableToner() == (
+  		dcl d: Document := new Document("nomeTeste", 1, '4', 'H');
+  		assertTrue(true);
+  		assertEqual(d.getDocName(),"nomeTeste");
+  	);
+  	
+  	
+  	
+																									-- Testing for PrinterCapability class
+
+  -- Fails because a printer doesnt have the capability to print in black or in color
+  private testPrinterCapabilityBlackOrColor: () ==> ()
+  	testPrinterCapabilityBlackOrColor() == (
+  		dcl pCapability: PrinterCapability := new PrinterCapability(true, true, false, false);
+  		assertTrue(true);
+  		assertEqual(pCapability.getCanPrintA4(),true);
+  	);
+   
+  -- Fails because a printer doesnt have the capability to print in A3 or in A4
+  private testPrinterCapabilityA3OrA4: () ==> ()
+  	testPrinterCapabilityA3OrA4() == (
+  		dcl pCapability: PrinterCapability := new PrinterCapability(false, false, true, false);
+  		assertTrue(true);
+  		assertEqual(pCapability.getCanPrintA4(),false);
+  	);
+    
+    
+	 --all of these tests should fail, test one at a time
+   -- Testing entry point, calls all the test functions in succession
+   public static main: () ==> ()
+     main() == (
+       dcl testSuite: PrinterErrorTest := new PrinterErrorTest();
+       --testSuite.testPrinterStatusUnavailableStatus();
+       --testSuite.testPrinterStatusOperationalAndNeedFixing();
+       --testSuite.testPrinterStatusIsntOperationalOrNeedFixing();
+       
+       --testSuite.testDocumentPositiveNumPages();
+       --testSuite.testDocumentUnavailableFormat();
+       --testSuite.testDocumentUnavailableToner();
+       
+       --testSuite.testPrinterCapabilityBlackOrColor();
+       testSuite.testPrinterCapabilityA3OrA4();
+       --testSuite.
+     );
+
+
+
+end PrinterErrorTest
