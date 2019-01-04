@@ -22,8 +22,7 @@ network menu
     print individual reports                                            (done)
     print global report                                                 (done)
 
-Java:       convert IO.print to sysout
-Java:       test on linux
+REMEMBER:   test on linux / convert IO.print to sysout
 Java:       refactor / memorize selection (FUTURE WORK)
 
 VDM++ Tests (document pages > 0 / others)

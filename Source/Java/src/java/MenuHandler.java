@@ -14,7 +14,9 @@ import MFESTA.User;
 
 public class MenuHandler {
 
-	private static final ArrayList<String> yesNoChoices = new ArrayList<String>() {{
+	private static final ArrayList<String> yesNoChoices = new ArrayList<String>() {
+		private static final long serialVersionUID = 4172494193209948751L;
+	{
 		add("yes");
 		add("no");
 		add("y");
@@ -83,7 +85,11 @@ public class MenuHandler {
 		return 5;
 	}
 
-	// TODO doc
+	/**
+	 * Prints the printer menu.
+	 * 
+	 * @return the number of choices available
+	 */
 	public int printerMenu() {
 		
 		System.out.println("1 - Create printer");
@@ -99,7 +105,11 @@ public class MenuHandler {
 		return 9;
 	}
 	
-	// TODO doc
+	/**
+	 * Prints the printer format menu.
+	 * 
+	 * @return the number of choices available
+	 */
 	public int printerFormatMenu() {
 		
 		System.out.println("1 - A4");
@@ -108,8 +118,12 @@ public class MenuHandler {
 		
 		return 3;
 	}
-	
-	// TODO doc
+
+	/**
+	 * Prints the printer toner menu.
+	 * 
+	 * @return the number of choices available
+	 */
 	public int printerTonerMenu() {
 		
 		System.out.println("1 - Black");
@@ -118,8 +132,12 @@ public class MenuHandler {
 		
 		return 3;
 	}
-	
-	// TODO doc
+
+	/**
+	 * Prints the network menu.
+	 * 
+	 * @return the number of choices available
+	 */
 	public int networkMenu() {
 		
 		System.out.println("1 - List printers in network");
@@ -133,7 +151,7 @@ public class MenuHandler {
 	}
 	
 	/**
-	 * Shows the specified message and waits on ENTER key input.
+	 * Prints a message and waits on ENTER key input.
 	 * 
 	 * @param msg the message to print
 	 */
@@ -145,7 +163,12 @@ public class MenuHandler {
 		sc.nextLine();
 	}
 
-	// TODO doc
+	/**
+	 * Prints a message and waits on the user to input "yes/no".
+	 * 
+	 * @param msg the message to print
+	 * @return whether the user selected "yes" or "no"
+	 */
 	public boolean inputYesNo(String msg) {
 
 		@SuppressWarnings("resource")
@@ -408,7 +431,12 @@ public class MenuHandler {
 		System.out.println();
 	}
 
-	// TODO doc
+	/**
+	 * Prints all printers along with their name, capabilities, pricing, capacity and status.
+	 * 
+	 * @param map the map to print
+	 * @param numColumns the number of columns to use
+	 */
 	public void prettyPrintPrinters(TreeMap<String, Printer> map, int numColumns) {
 
 		int remaining = map.size();
@@ -440,7 +468,14 @@ public class MenuHandler {
 		System.out.println();
 	}
 	
-	// TODO doc
+	/**
+	 * Prints all printers contained in the VDM set provided along with their name,
+	 * capabilities, pricing, capacity and status.
+	 * 
+	 * @param printerMap the map to print
+	 * @param printerSet the VDM set to print
+	 * @param numColumns the number of columns to use
+	 */
 	public void prettyPrintPrintersSet(TreeMap<String, Printer> printerMap, VDMSet printerSet, int numColumns) {
 
 		int remaining = printerSet.size();
@@ -475,7 +510,12 @@ public class MenuHandler {
 		System.out.println();
 	}
 	
-	// TODO doc
+	/**
+	 * Parses the printer's capabilities object and outputs it in a human readable way.
+	 * 
+	 * @param printer the printer to use
+	 * @return the string representing the printer's capabilities
+	 */
 	private String parsePrinterCapabilities(Printer printer) {
 		
 		String capabilities = "";
@@ -487,7 +527,12 @@ public class MenuHandler {
 		return capabilities;
 	}
 	
-	// TODO doc
+	/**
+	 * Parses the printer's pricing object and outputs it in a human readable way.
+	 * 
+	 * @param printer the printer to use
+	 * @return the string representing the printer's prices
+	 */
 	private String parsePrinterPricing(Printer printer) {
 		
 		String pricing = "";
@@ -502,8 +547,13 @@ public class MenuHandler {
 		
 		return pricing;
 	}
-	
-	// TODO doc
+
+	/**
+	 * Parses the printer's capacities object and outputs it in a human readable way.
+	 * 
+	 * @param printer the printer to use
+	 * @return the string representing the printer's capacities
+	 */
 	private String parsePrinterCapacity(Printer printer) {
 		
 		String capacities = "";
@@ -518,8 +568,13 @@ public class MenuHandler {
 		
 		return capacities;
 	}
-	
-	// TODO doc
+
+	/**
+	 * Parses the printer's status object and outputs it in a human readable way.
+	 * 
+	 * @param printer the printer to use
+	 * @return the string representing the printer's status
+	 */
 	private String parsePrinterStatus(Printer printer) {
 		
 		if(printer.getPrinterStatus().getStatus().contains("operational")) return "operational";

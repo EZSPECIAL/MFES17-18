@@ -72,7 +72,9 @@ public class EntryPoint {
 		}
 	}
 	
-	// TODO doc
+	/**
+	 * Handles network management menu options. 
+	 */
 	private static void networkMenuLogic() {
 
 		boolean onMenu = true;
@@ -132,7 +134,9 @@ public class EntryPoint {
 					boolean isInvalid = false;
 
 					String selectedPrinterName = printers.get("Printer" + printerChoice).getPrinterName();
-					for(Iterator<Printer> iter = network.getPrinterList().iterator(); iter.hasNext(); ) {
+					
+					for(@SuppressWarnings("unchecked")
+					Iterator<Printer> iter = network.getPrinterList().iterator(); iter.hasNext(); ) {
 						Printer printer = iter.next();
 						if(printer.getPrinterName().equals(selectedPrinterName)) {
 							isInvalid = true;
@@ -205,7 +209,9 @@ public class EntryPoint {
 		}
 	}
 
-	// TODO doc
+	/**
+	 * Handles printer management menu options. 
+	 */
 	private static void printerMenuLogic() {
 		
 		boolean onMenu = true;
@@ -318,7 +324,10 @@ public class EntryPoint {
 		}
 	}
 	
-	// TODO doc
+	/**
+	 * Handles fix printer menu options. 
+	 */
+	@SuppressWarnings("unchecked")
 	private static void fixPrinterMenuLogic() {
 	
 		menuHandler.prettyPrintPrinters(printers, 1);
@@ -354,8 +363,11 @@ public class EntryPoint {
 
 		printer.fix(fixSet);
 	}
-	
-	// TODO doc
+
+	/**
+	 * Handles break printer menu options. 
+	 */
+	@SuppressWarnings("unchecked")
 	private static void breakPrinterMenuLogic() {
 		
 		menuHandler.prettyPrintPrinters(printers, 1);
@@ -387,8 +399,10 @@ public class EntryPoint {
 		
 		printer.break_(breakSet);
 	}
-	
-	// TODO doc
+
+	/**
+	 * Handles print document menu options. 
+	 */
 	private static void printDocumentMenuLogic() {
 
 		// Check users exist
@@ -455,8 +469,16 @@ public class EntryPoint {
 		
 		printers.get("Printer" + printerChoice).print(toPrint, users.get("User" + userChoice));
 	}
-	
-	// TODO doc
+
+	/**
+	 * Checks if the user has enough money to print the specified document at the specified
+	 * printer. Returns 0 if successful, totalCost otherwise.
+	 * 
+	 * @param user the user to check
+	 * @param doc the document to print
+	 * @param printer the printer being used to print
+	 * @return 0 if user can print, totalCost if not enough balance
+	 */
 	private static double checkUserBalance(User user, Document doc, Printer printer) {
 		
 		double balance = user.getBalance().doubleValue();
@@ -484,8 +506,14 @@ public class EntryPoint {
 		if(balance >= totalCost) return 0;
 		else return totalCost;
 	}
-	
-	// TODO doc
+
+	/**
+	 * Checks all printers to see if they can print the specified document. Checks format/toner
+	 * requirements, paper/toner levels and operational status.
+	 * 
+	 * @param doc the document to print
+	 * @return the map of printers that can print the document
+	 */
 	private static TreeMap<String, Printer> checkPrinterAvailability(Document doc) {
 		
 		char format = doc.getPageFormat();
@@ -571,7 +599,9 @@ public class EntryPoint {
 		return availablePrinters;
 	}
 	
-	// TODO doc
+	/**
+	 * Handles create printer menu options.
+	 */
 	private static void createPrinterMenuLogic() {
 
 		menuHandler.clrscr();
@@ -602,7 +632,13 @@ public class EntryPoint {
 		printers.put("Printer" + printers.size(), objectHandler.createPrinter(printerName, printerCapability, printerPricing, printerCapacity, objectHandler.createPrinterStatus()));
 	}
 	
-	// TODO doc
+	/**
+	 * Parses user choice as an integer and returns it as an array of printer capabilities.
+	 * 
+	 * @param formatChoice the chosen format
+	 * @param tonerChoice the chosen toner
+	 * @return the array of booleans representing the printer's capabilities (canPrintA4, canPrintA3, canPrintBlack, canPrintColor)
+	 */
 	private static Boolean[] parsePrinterCapabilities(int formatChoice, int tonerChoice) {
 
 		boolean printA4, printA3, printBlack, printColor;
@@ -639,7 +675,13 @@ public class EntryPoint {
 		return bools;
 	}
 	
-	// TODO doc
+	/**
+	 * Prompts the user for a printer capacity object using the specified
+	 * capabilities.
+	 * 
+	 * @param bools the printer capabilities
+	 * @return the printer capacity created by the user
+	 */
 	private static PrinterCapacity createPrinterCapacity(Boolean[] bools) {
 		
 		// Init all pricing to 0
@@ -672,7 +714,13 @@ public class EntryPoint {
 		return objectHandler.createPrinterCapacity(numA4, numA3, maxBlack, maxColor);
 	}
 	
-	// TODO doc
+	/**
+	 * Prompts the user for a printer pricing object using the specified
+	 * capabilities.
+	 * 
+	 * @param bools the printer capabilities
+	 * @return the printer pricing created by the user
+	 */
 	private static PrinterPricing createPrinterPricing(Boolean[] bools) {
 		
 		// Init all pricing to 0
@@ -808,13 +856,20 @@ public class EntryPoint {
 		}
 	}
 
-	// TODO doc
+	/**
+	 * Checks whether the user is adding a document with a duplicate name.
+	 * 
+	 * @param user the user adding a document
+	 * @param name the name of the new document
+	 * @return whether the new document conflicts with an existing user document
+	 */
 	private static boolean checkDuplicateDocName(User user, String name) {
 
 		// Check if document name is already in user's documents
 		boolean isInvalid = false;
 
-		for(Iterator<Document> iter = user.getDocumentList().iterator(); iter.hasNext(); ) {
+		for(@SuppressWarnings("unchecked")
+		Iterator<Document> iter = user.getDocumentList().iterator(); iter.hasNext(); ) {
 			Document doc = iter.next();
 			if(doc.getDocName().equals(name)) {
 				isInvalid = true;
@@ -876,7 +931,10 @@ public class EntryPoint {
 		return documents.get("Doc" + (documents.size() - 1));
 	}
 	
-	// TODO doc
+	/**
+	 * Creates test data to be used for debugging the Java interface. Used by supplying any amount of command line arguments (!= 0).
+	 */
+	@SuppressWarnings("unchecked")
 	private static void createTestData() {
 		
 		users.put("User0", objectHandler.createUser(25.0));
