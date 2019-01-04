@@ -19,9 +19,9 @@ main menu
         print document                                                      (done)
         break/empty printer                                                 (done)
         breakAll                                                            (done)
-        fix/refill printer
+        fix/refill printer                                                  (done)
         fixAll                                                              (done)
-        report
+        report                                                              (done)
     network menu
 
 document reference bug! (VDM: copy doc / Java: copy doc - user,doc map)

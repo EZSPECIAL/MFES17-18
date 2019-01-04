@@ -133,7 +133,15 @@ public class EntryPoint {
 				}
 				break;
 			case 6:
-				// Fix/refill printer TODO
+				// Fix/refill printer
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+					menuHandler.waitOnKey(keyMsg);
+				} else {
+					fixPrinterMenuLogic();
+				}
 				break;
 			case 7:
 				// Fix all
@@ -151,13 +159,62 @@ public class EntryPoint {
 				}
 				break;
 			case 8:
-				// Print report TODO
+				// Print report
+				
+				// Check printers exist
+				if(printers.size() == 0) {
+					System.out.println("No printers created! Please create one before using this menu.");
+				} else {
+					
+					menuHandler.prettyPrintPrinters(printers, 1);
+					int printerChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (printers.size() - 1) + "]", 0, printers.size() - 1);
+
+					printers.get("Printer" + printerChoice).printIndividualReport();
+				}
+				menuHandler.waitOnKey(keyMsg);
 				break;
 			case 9:
 				onMenu = false;
 				break;
 			}
 		}
+	}
+	
+	// TODO doc
+	private static void fixPrinterMenuLogic() {
+	
+		menuHandler.prettyPrintPrinters(printers, 1);
+		int printerChoice = menuHandler.intRangeInput("Please input a number in range [0, " + (printers.size() - 1) + "]", 0, printers.size() - 1);
+
+		Printer printer = printers.get("Printer" + printerChoice);
+		VDMSet fixSet = new VDMSet();
+		VDMSet printerStatus = printer.getPrinterStatus().getStatus();
+		
+		// Check printer has problems
+		if(printerStatus.contains("operational") && printerStatus.size() == 1) {
+			System.out.println("Printer has no problems, please select another.");
+			menuHandler.waitOnKey(keyMsg);
+			return;
+		}
+		
+		for(Iterator<String> iter = printerStatus.iterator(); iter.hasNext(); ) {
+			String status = iter.next();
+			
+			// Ask what to fix for each of the printer's current negative status
+			if(status.equals("needA4")) {
+				if(menuHandler.inputYesNo("Refill A4 paper stock? [y/n]")) fixSet.add("needA4");
+			} else if(status.equals("needA3")) {
+				if(menuHandler.inputYesNo("Refill A3 paper stock? [y/n]")) fixSet.add("needA3");
+			} else if(status.equals("needBlackToner")) {
+				if(menuHandler.inputYesNo("Refill black toner stock? [y/n]")) fixSet.add("needBlackToner");
+			} else if(status.equals("needColorToner")) {
+				if(menuHandler.inputYesNo("Refill color toner stock? [y/n]")) fixSet.add("needColorToner");
+			} else if(status.equals("needFixing")) {
+				if(menuHandler.inputYesNo("Fix malfunction in printer? [y/n]")) fixSet.add("needFixing");
+			}
+		}
+
+		printer.fix(fixSet);
 	}
 	
 	// TODO doc
