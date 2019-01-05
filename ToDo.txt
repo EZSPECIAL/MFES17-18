@@ -5,7 +5,9 @@ Java:       refactor / memorize selection (FUTURE WORK)
 
 Report
     1 (requirements)
-    2 (use case diagram / use case description / class diagram / class description)
+    2 (use case description)
     4 (talk about requirements in tests)
     5 (domain verification / invariant verification)
     8
+
+Deliver (final report, VDM++ project files, UML project files)
