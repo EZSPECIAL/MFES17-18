@@ -8,90 +8,90 @@ operations
   -- Checks values are equal
   private assertEqual: ? * ? ==> ()
     assertEqual(expected, actual) == return post expected = actual;
-      
+
   -- Checks values are approximately equal
   private assertApproximatelyEqual: real * real ==> ()
     assertApproximatelyEqual(expected, actual) == (
       dcl delta: real := abs expected - actual;
-        
+
       if delta < 0.00001
       then assertTrue(true)
       else assertTrue(false);
     );
-    
+
   -- Testing for PrinterStatus class
   private testPrinterStatus: () ==> ()
     testPrinterStatus() == (
       dcl p1: PrinterStatus := new PrinterStatus();
-      
+
       assertEqual(p1.getStatusT(),{"needA4", "needA3", "needBlackToner", "needColorToner", "needFixing", "operational"});
-      
+
       p1.addStatus("needA4");
       p1.addStatus("needA3");
       p1.removeStatus("needA4");
       p1.removeStatus("needA3");
       p1.flipOperationalStatus();
       assertEqual(p1.getStatus(), {"needFixing"});
-      
+
       p1.flipOperationalStatus();
       p1.addStatus("needBlackToner");
       assertEqual(p1.getStatus(),{"operational", "needBlackToner"});
     );
-   
+
   -- Testing for Document class
   private testDocument: () ==> ()
     testDocument() == (
       dcl d: Document := new Document("testName", 5, '4', 'C');
-      
+
       assertEqual(d.getDocName(), "testName");
       assertEqual(d.getPageFormat(), '4');
       assertEqual(d.getPageToner(), 'C');
       assertEqual(d.getNumPages(), d.getPagesLeft());
       assertEqual(d.getNumPages(), 5);
-      
+
       d.setPagesLeft(d.getNumPages() - 2);
       assertEqual(d.getPagesLeft(), 3);
     );
-  
+
   -- Testing for PrinterCapability class
   private testPrinterCapability: () ==> ()
     testPrinterCapability() == (
       dcl pCapabilityA4Color: PrinterCapability := new PrinterCapability(true, false, false, true);
       dcl pCapabilityA3Black: PrinterCapability := new PrinterCapability(false, true, true, false);
-      
+
       assertEqual(pCapabilityA4Color.getCanPrintA4(), true);
       assertEqual(pCapabilityA4Color.getCanPrintA3(), false);
       assertEqual(pCapabilityA4Color.getCanPrintBlack(), false);
       assertEqual(pCapabilityA4Color.getCanPrintColor(), true);
-      
+
       assertEqual(pCapabilityA3Black.getCanPrintA4(), false);
       assertEqual(pCapabilityA3Black.getCanPrintA3(), true);
       assertEqual(pCapabilityA3Black.getCanPrintBlack(), true);
       assertEqual(pCapabilityA3Black.getCanPrintColor(), false);
     );
-    
+
   -- Testing for PrinterCapacity class
   private testPrinterCapacity: () ==> ()
     testPrinterCapacity() == (
       dcl pCapacity: PrinterCapacity := new PrinterCapacity(7, 8, 9, 10);
-      
+
       -- Test values are as expected
       assertEqual(pCapacity.getMaxCapacityA4(), 7);
       assertEqual(pCapacity.getMaxCapacityA3(), 8);
       assertEqual(pCapacity.getMaxCapacityBlack(), 9);
       assertEqual(pCapacity.getMaxCapacityColor(), 10);
-      
+
       assertEqual(pCapacity.getMaxCapacityA4(), pCapacity.getNumOfSheetsA4());
       assertEqual(pCapacity.getMaxCapacityA3(), pCapacity.getNumOfSheetsA3());
       assertEqual(pCapacity.getMaxCapacityBlack(), pCapacity.getBlackPrintsLeft());
       assertEqual(pCapacity.getMaxCapacityColor(), pCapacity.getColorPrintsLeft());
-            
+
       -- Test removing paper/toner
       pCapacity.setNumOfSheetsA4(pCapacity.getNumOfSheetsA4() - 4);
       pCapacity.setNumOfSheetsA3(pCapacity.getNumOfSheetsA3() - 3);
       pCapacity.setBlackPrintsLeft(pCapacity.getBlackPrintsLeft() - 2);
       pCapacity.setColorPrintsLeft(pCapacity.getColorPrintsLeft() - 1);
-        
+
       assertEqual(pCapacity.getNumOfSheetsA4(), 3);
       assertEqual(pCapacity.getNumOfSheetsA3(), 5);
       assertEqual(pCapacity.getBlackPrintsLeft(), 7);
@@ -102,7 +102,7 @@ operations
   private testPrinterPricing: () ==> ()
     testPrinterPricing() == (
       dcl pPricing: PrinterPricing := new PrinterPricing(0.6, 0.7, 0.8, 0.9);
-      
+
       assertEqual(pPricing.getPriceA4Black(), 0.6);
       assertEqual(pPricing.getPriceA4Color(), 0.7);
       assertEqual(pPricing.getPriceA3Black(), 0.8);
@@ -113,17 +113,17 @@ operations
   private testPrinterReport: () ==> ()
     testPrinterReport() == (
       dcl pReport: PrinterReport := new PrinterReport();
-      
+
       assertEqual(pReport.getBlackA4Printed(), 0);
       assertEqual(pReport.getColorA4Printed(), 0);
       assertEqual(pReport.getBlackA3Printed(), 0);
       assertEqual(pReport.getColorA3Printed(), 0);
-        
+
       pReport.addBlackA4(5);
       pReport.addColorA4(6);
       pReport.addBlackA3(7);
       pReport.addColorA3(8);
-            
+
       assertEqual(pReport.getBlackA4Printed(), 5);
       assertEqual(pReport.getColorA4Printed(), 6);
       assertEqual(pReport.getBlackA3Printed(), 7);
@@ -133,27 +133,27 @@ operations
       pReport.addColorA4( 2);
       pReport.addBlackA3( 3);
       pReport.addColorA3( 4);
-            
+
       assertEqual(pReport.getBlackA4Printed(), 6);
       assertEqual(pReport.getColorA4Printed(), 8);
       assertEqual(pReport.getBlackA3Printed(), 10);
       assertEqual(pReport.getColorA3Printed(), 12);
     );
-    
+
   -- Testing for User class
   private testUser: () ==> ()
     testUser() == (
       dcl doc1: Document := new Document("testName1", 10, '3', 'B');
       dcl doc2: Document := new Document("testName2", 20, '4', 'B');
       dcl user: User := new User(0.1);
-      
+
       -- Test user balance
       assertApproximatelyEqual(user.getBalance(), 0.1);
       user.deposit(1.1);
       assertApproximatelyEqual(user.getBalance(), 1.2);
       user.withdraw(0.2);
       assertApproximatelyEqual(user.getBalance(), 1);
-            
+
       -- Test user document list
       assertEqual(user.getDocumentList(), {});
       user.addDocument(doc1);
@@ -165,78 +165,78 @@ operations
       user.removeDocument(doc2);
       assertEqual(user.getDocumentList(), {});
     );
-    
+
   -- Testing for Printer class
   private testPrinter: () ==> ()
     testPrinter() == (
       dcl user: User := new User(30);
-        
+
       dcl pPricing4B: PrinterPricing := new PrinterPricing(0.5, 0.8, 0.6, 1);
       dcl pCapacity4B: PrinterCapacity := new PrinterCapacity(20, 0, 25, 0);
       dcl pCapability4B: PrinterCapability := new PrinterCapability(true, false, true, false);
       dcl pStatus4B: PrinterStatus := new PrinterStatus();
       dcl printer4B: Printer := new Printer("testPrinterName4B", pCapability4B, pPricing4B, pCapacity4B, pStatus4B);
-        
+
       dcl pPricing3C: PrinterPricing := new PrinterPricing(0.5, 0.8, 0.6, 1);
       dcl pCapacity3C: PrinterCapacity := new PrinterCapacity(0, 10, 0, 15);
       dcl pCapability3C: PrinterCapability := new PrinterCapability(false, true, false, true);
       dcl pStatus3C: PrinterStatus := new PrinterStatus();
       dcl printer3C: Printer := new Printer("testPrinterName3C", pCapability3C, pPricing3C, pCapacity3C, pStatus3C);
-        
+
       dcl pPricingAll: PrinterPricing := new PrinterPricing(0.5, 0.8, 0.6, 1);
       dcl pCapacityAll: PrinterCapacity := new PrinterCapacity(20, 20, 25, 25);
       dcl pCapabilityAll: PrinterCapability := new PrinterCapability(true, true, true, true);
       dcl pStatusAll: PrinterStatus := new PrinterStatus();
       dcl printerAll: Printer := new Printer("testPrinterName4C", pCapabilityAll, pPricingAll, pCapacityAll, pStatusAll);
-        
+
       dcl doc1: Document := new Document("doc1", 10, '4', 'B');
       dcl doc2: Document := new Document("doc2", 30, '4', 'B');
       dcl doc3: Document := new Document("doc3", 20, '3', 'C');
       dcl doc4: Document := new Document("doc4", 5, '3', 'C');
       dcl doc5: Document := new Document("doc5", 30, '4', 'C');
       dcl doc6: Document := new Document("doc6", 5, '3', 'B');
-        
+
       -- Test printer getters
       assertEqual(printer4B.getPrinterName(), "testPrinterName4B");
       assertEqual(printer4B.getPrinterPricing(), pPricing4B);
       assertEqual(printer4B.getPrinterCapabilities(), pCapability4B);
       assertEqual(printer4B.getPrinterCapacities(), pCapacity4B);
       assertEqual(printer4B.getPrinterStatus(), pStatus4B);
-        
+
       -- Test numPagesToPrint()
       assertEqual(printer4B.numPagesToPrint(doc1), 10);
       assertEqual(printer4B.numPagesToPrint(doc2), 20);
       assertEqual(printer4B.numPagesToPrint(doc3), 0);
-        
+
       assertEqual(printer3C.numPagesToPrint(doc4), 5);
       assertEqual(printer3C.numPagesToPrint(doc3), 10);
-        
-      -- Test calcPrintingCost() 
+
+      -- Test calcPrintingCost()
       assertApproximatelyEqual(printer4B.calcPrintingCost(doc1), 10 * 0.5);
       assertApproximatelyEqual(printer3C.calcPrintingCost(doc4), 5 * 1);
-      
+
       assertApproximatelyEqual(printerAll.calcPrintingCost(doc1), 10 * 0.5);
       assertApproximatelyEqual(printerAll.calcPrintingCost(doc3), 20 * 1);
       assertApproximatelyEqual(printerAll.calcPrintingCost(doc4), 5 * 1);
       assertApproximatelyEqual(printerAll.calcPrintingCost(doc5), 20 * 0.8);
       assertApproximatelyEqual(printerAll.calcPrintingCost(doc6), 5 * 0.6);
-        
+
       -- Test break(), fix(), breakAll() and fixAll()
       printer4B.break({"needA4", "needBlackToner", "needFixing"});
       assertEqual(printer4B.getPrinterStatus().getStatus(), {"needFixing", "needA4", "needBlackToner"});
       printer4B.fix({"needBlackToner", "needA4", "needFixing"});
       assertEqual(printer4B.getPrinterStatus().getStatus(), {"operational"});
-       
+
       printer3C.break({"needA3", "needColorToner", "needFixing"});
       assertEqual(printer3C.getPrinterStatus().getStatus(), {"needFixing", "needA3", "needColorToner"});
       printer3C.fix({"needColorToner","needFixing", "needA3"});
       assertEqual(printer3C.getPrinterStatus().getStatus(), {"operational"});
-       
+
       printerAll.breakAll();
       assertEqual(printerAll.getPrinterStatus().getStatus(), {"needA4", "needA3", "needBlackToner", "needColorToner", "needFixing"});
       printerAll.fixAll();
       assertEqual(printerAll.getPrinterStatus().getStatus(), {"operational"});
-        
+
       -- Test print()
       user.addDocument(doc1);
       user.addDocument(doc2);
@@ -244,11 +244,11 @@ operations
       user.addDocument(doc4);
       user.addDocument(doc5);
       user.addDocument(doc6);
-        
+
       -- Capacity is (20, 20, 25, 25)
       -- Document is 10 A4 Black pages
       -- after printing capacity will be (10, 20, 15, 25)
-      -- Document was removed from the user's list and the cost was withdrawn from the user's balance 
+      -- Document was removed from the user's list and the cost was withdrawn from the user's balance
       printerAll.print(doc1, user);
       assertEqual(printerAll.sumTotalPagesPrinted(), 10);
       assertEqual(printerAll.sumTotalMoneyReceived(), 10 * 0.5);
@@ -258,7 +258,7 @@ operations
       assertEqual(printerAll.getPrinterStatus().getStatus(), {"operational"});
       assertEqual(user.getBalance(), 30 - 10 * 0.5);
       assertEqual(user.getDocumentList(), {doc2, doc3, doc4, doc5, doc6});
-        
+
       -- Capacity is (10, 20, 15, 25)
       -- Document is 20 A3 Color pages
       -- after printing capacity will be (10, 0, 15, 5) so the tray of A3 paper will be empty
@@ -272,7 +272,7 @@ operations
       assertEqual(printerAll.getPrinterStatus().getStatus(), {"operational", "needA3"});
       assertEqual(user.getBalance(), 30 - 10 * 0.5 - 20 * 1);
       assertEqual(user.getDocumentList(), {doc2, doc4, doc5, doc6});
-        
+
       -- Capacity is (10, 0, 15, 5)
       -- Document is 30 A4 Color pages
       -- after printing capacity will be (5, 0, 15, 0) so the tray of A3 paper and the color toner will be empty
@@ -286,12 +286,12 @@ operations
       assertEqual(printerAll.getPrinterStatus().getStatus(), {"operational", "needA3", "needColorToner"});
       assertEqual(user.getBalance(), 30 - 10 * 0.5 - 20 * 1 - 5 * 0.8);
       assertEqual(user.getDocumentList(), {doc2, doc4, doc5, doc6});
-       
+
       printerAll.fixAll();
       assertEqual(printerAll.getPrinterCapacities().getNumOfSheetsA4(), 5);
       assertEqual(printerAll.getPrinterCapacities().getNumOfSheetsA3(), 20);
       assertEqual(printerAll.getPrinterCapacities().getBlackPrintsLeft(), 15);
-      assertEqual(printerAll.getPrinterCapacities().getColorPrintsLeft(), 25);  
+      assertEqual(printerAll.getPrinterCapacities().getColorPrintsLeft(), 25);
     );
 
   -- Testing for Network class
