@@ -1,28 +1,11 @@
 addStatus() can break system -> postcondition on print() / break() / fix() fails though
 
-user menu
-    create user                                                         (done)
-    list user (summary)                                                 (done)
-    add balance to user                                                 (done)
-    list user documents                                                 (done)
-    add document to user                                                (done)
-printer menu
-    create printer                                                      (done)
-    list printers                                                       (done)
-    print document                                                      (done)
-    break/empty printer                                                 (done)
-    breakAll                                                            (done)
-    fix/refill printer                                                  (done)
-    fixAll                                                              (done)
-    report                                                              (done)
-network menu
-    list printers in network                                            (done)
-    add printer                                                         (done)
-    remove printer                                                      (done)
-    print individual reports                                            (done)
-    print global report                                                 (done)
-
-REMEMBER:   test on linux / convert IO.print to sysout
+REMEMBER:   test on linux
 Java:       refactor / memorize selection (FUTURE WORK)
 
 Report
+    1 (requirements)
+    2 (use case diagram / use case description / class diagram / class description)
+    4 (talk about requirements in tests)
+    5 (domain verification / invariant verification)
+    8
