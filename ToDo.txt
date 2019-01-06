@@ -1,6 +1,3 @@
 addStatus() can break system -> postcondition on print() / break() / fix() fails though
 
-REMEMBER:   test on linux
-Java:       refactor / memorize selection (FUTURE WORK)
-
-Deliver (final report, VDM++ project files, UML project files)
+Java:       refactor / memorize selection
