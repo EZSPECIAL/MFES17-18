@@ -451,23 +451,32 @@ public class EntryPoint {
 		}
 		
 		// List available printers and await user input
-		menuHandler.prettyPrintPrinters(availablePrinters, 1);
-		
-		// Await valid printer input
-		int printerChoice;
-		do {
-			printerChoice = menuHandler.intInput("Please input a number seen above.");
-		} while(!availablePrinters.containsKey("Printer" + printerChoice));
-		
-		// Check user balance
-		double totalCost = checkUserBalance(users.get("User" + userChoice), toPrint, printers.get("Printer" + printerChoice));
-		if(totalCost != 0) {
-			System.out.println("Not enough balance to print, needed: " + totalCost);
-			menuHandler.waitOnKey(keyMsg);
-			return;
+		while(true) {
+			menuHandler.prettyPrintPrinters(availablePrinters, 1);
+
+			// Await valid printer input
+			int printerChoice;
+			do {
+				printerChoice = menuHandler.intInput("Please input a number seen above.");
+			} while(!availablePrinters.containsKey("Printer" + printerChoice));
+
+			// Check user balance
+			double totalCost = checkUserBalance(users.get("User" + userChoice), toPrint, printers.get("Printer" + printerChoice));
+			if(totalCost != 0) {
+				System.out.println("Not enough balance to print, needed: " + totalCost);
+				menuHandler.waitOnKey(keyMsg);
+				return;
+			}
+
+			// Confirm pages to print to user
+			int numPages = printers.get("Printer" + printerChoice).numPagesToPrint(toPrint).intValue();
+			boolean userConfirmation = menuHandler.inputYesNo("Can print " + numPages + "/" + toPrint.getPagesLeft() + ". Confirm?");
+
+			if(userConfirmation) {
+				printers.get("Printer" + printerChoice).print(toPrint, users.get("User" + userChoice));
+				break;
+			}
 		}
-		
-		printers.get("Printer" + printerChoice).print(toPrint, users.get("User" + userChoice));
 	}
 
 	/**
@@ -697,17 +706,17 @@ public class EntryPoint {
 		}
 		
 		// Can print A3
-		if(bools[canPrintA4] && bools[canPrintColor]) {
+		if(bools[canPrintA3]) {
 			numA3 = menuHandler.intGTEInput("Please input A3 paper capacity (must be > 0)", 1);
 		}
 		
 		// Can print Black
-		if(bools[canPrintA3] && bools[canPrintBlack]) {
+		if(bools[canPrintBlack]) {
 			maxBlack = menuHandler.intGTEInput("Please input black toner capacity (must be > 0)", 1);
 		}
 		
 		// Can print Color
-		if(bools[canPrintA3] && bools[canPrintColor]) {
+		if(bools[canPrintColor]) {
 			maxColor = menuHandler.intGTEInput("Please input color toner capacity (must be > 0)", 1);
 		}
 		
